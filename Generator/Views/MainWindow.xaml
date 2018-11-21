@@ -17,6 +17,8 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
 		<Button
@@ -57,6 +59,36 @@
 			<Button.Content>
 				<TextBlock 
 					Text="パラメータチップを作る" />
+			</Button.Content>
+		</Button>
+		<Button
+			Grid.Row="0"
+			Grid.Column="2"
+			Margin="5,5,5,5"
+			Command="{Binding TransitionToParameterChipCreating}">
+			<Button.Content>
+				<TextBlock 
+					Text="パラメータを作る" />
+			</Button.Content>
+		</Button>
+		<Button
+			Grid.Row="1"
+			Grid.Column="2"
+			Margin="5,5,5,5"
+			Command="{Binding TransitionToParameterChipCreating}">
+			<Button.Content>
+				<TextBlock 
+					Text="チャプターを作る" />
+			</Button.Content>
+		</Button>
+		<Button
+			Grid.Row="0"
+			Grid.Column="3"
+			Margin="5,5,5,5"
+			Command="{Binding TransitionToParameterChipCreating}">
+			<Button.Content>
+				<TextBlock 
+					Text="装備可能箇所を作る" />
 			</Button.Content>
 		</Button>
 
