@@ -132,8 +132,44 @@
     <Compile Include="Repositories\ParameterRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="Repositories\SaveRepository.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Page Include="Views\MainWindow.xaml">
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Page Include="Views\Pages\CreatingBodyPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\CreatingChapterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\CreatingEquipablePlacePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\CreatingEquipmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\CreatingParameterChipPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\CreatingParameterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\CreatingSavePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\InitialSettingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -141,7 +177,34 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
+    <Compile Include="Views\Pages\CreatingBodyPage.xaml.cs">
+      <DependentUpon>CreatingBodyPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\CreatingChapterPage.xaml.cs">
+      <DependentUpon>CreatingChapterPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\CreatingEquipablePlacePage.xaml.cs">
+      <DependentUpon>CreatingEquipablePlacePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\CreatingEquipmentPage.xaml.cs">
+      <DependentUpon>CreatingEquipmentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\CreatingParameterChipPage.xaml.cs">
+      <DependentUpon>CreatingParameterChipPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\CreatingParameterPage.xaml.cs">
+      <DependentUpon>CreatingParameterPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\CreatingSavePage.xaml.cs">
+      <DependentUpon>CreatingSavePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\InitialSettingPage.xaml.cs">
+      <DependentUpon>InitialSettingPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
