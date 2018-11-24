@@ -6,7 +6,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	Title="Generator" 
-	Height="450" 
-	Width="800"
-	Source="/Views/Pages/MainPage.xaml">
+	Width="1600"
+	Height="900"
+	Source="/Views/Pages/MainPage.xaml"
+	ShowsNavigationUI="False">
 </NavigationWindow>

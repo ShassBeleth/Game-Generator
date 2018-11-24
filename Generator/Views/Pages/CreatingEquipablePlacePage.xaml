@@ -7,9 +7,129 @@
 	mc:Ignorable="d" 
 	Title="CreatingEquipablePlacePage">
 
+	<!-- 編集部/ボタン -->
 	<Grid>
-		<TextBlock
-			Text="装備可能箇所作成" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="60" />
+		</Grid.RowDefinitions>
+
+		<!-- 編集部 -->
+		<Grid
+			Grid.Row="0">
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="100" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<!-- ラベル/入力欄 -->
+			<Grid
+				Grid.Row="0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="200" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<!-- ラベル -->
+				<Label
+					Grid.Column="0"
+					Grid.Row="0"
+					Content="ID" />
+				<!-- 入力欄 -->
+				<TextBox 
+					Grid.Column="1"
+					Grid.Row="0"
+					Margin="5,5,5,5"
+					/>
+
+				<!-- ラベル -->
+				<Label
+					Grid.Column="0"
+					Grid.Row="1"
+					Content="装備可能箇所名" />
+				<!-- 入力欄 -->
+				<TextBox 
+					Grid.Column="1"
+					Grid.Row="1"
+					Margin="5,5,5,5"
+					/>
+
+				<!-- 追加ボタン -->
+				<Button
+					Grid.Column="2"
+					Grid.RowSpan="2"
+					Content="追加" 
+					Margin="5,5,5,5"
+					/>
+			</Grid>
+			
+			<!-- 一覧 -->
+			<DataGrid 
+				Grid.Row="1"
+				AutoGenerateColumns="False"
+				ItemsSource="{Binding EquipablePlaces}"
+				>
+				<DataGrid.Columns>
+					<DataGridTextColumn
+						Header="ID"
+						Width="200"
+						Binding="{Binding Id}"/>
+					<DataGridTextColumn
+						Header="装備可能箇所名"
+						Width="*"
+						Binding="{Binding Name}"/>
+					<DataGridTemplateColumn
+						Header="削除">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button
+									Content="削除"
+									Width="200"
+									Margin="5,5,5,5"
+									Tag="{Binding Id}" 
+									Click="Delete"
+									/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+				
+		</Grid>
+
+		<!-- 下部ボタン -->
+		<Grid
+			Grid.Row="1" >
+			<Grid.ColumnDefinitions >
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="200" />
+			</Grid.ColumnDefinitions>
+
+			<!-- 保存ボタン-->
+			<Button
+				Grid.Column ="1"
+				Content="保存"
+				Margin="5,5,5,5"
+				Command="{Binding SaveToParameterCommand}"
+				/>
+			
+			<!-- 戻るボタン -->
+			<Button
+				Grid.Column="2"
+				Content="戻る"
+				Margin="5,5,5,5"
+				Command="{Binding BackToMainPage}"
+				/>
+
+		</Grid>
+
 	</Grid>
 	
 </Page>

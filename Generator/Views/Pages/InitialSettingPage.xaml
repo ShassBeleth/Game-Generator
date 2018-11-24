@@ -8,7 +8,60 @@
 	Title="InitialSettingPage">
 
 	<Grid>
-		<TextBlock
-			Text="初期設定" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="60" />
+		</Grid.RowDefinitions>
+
+		<Grid
+			Grid.Row="0">
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto" />
+			</Grid.RowDefinitions>
+			
+			<!-- Dataフォルダのパス -->
+			<Grid
+				Grid.Row="0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Label
+					Grid.Column="0"
+					Content="Dataフォルダのパス"/>
+				<TextBox
+					Grid.Column="1"/>
+			</Grid>
+
+		</Grid>
+
+		<!-- 下部ボタン -->
+		<Grid
+			Grid.Row="1" >
+			<Grid.ColumnDefinitions >
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="200" />
+			</Grid.ColumnDefinitions>
+
+			<!-- 保存ボタン-->
+			<Button
+				Grid.Column ="1"
+				Content="保存"
+				Margin="5,5,5,5"
+				Command="{Binding SaveToInitialSettingCommand}"
+				/>
+
+			<!-- 戻るボタン -->
+			<Button
+				Grid.Column="2"
+				Content="戻る"
+				Margin="5,5,5,5"
+				Command="{Binding BackToMainPage}"
+				/>
+
+		</Grid>
+
 	</Grid>
 </Page>

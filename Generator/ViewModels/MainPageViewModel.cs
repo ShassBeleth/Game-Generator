@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive.Disposables;
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using Generator.Repositories.Models;
 using Generator.Views.Pages;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -17,6 +19,18 @@ namespace Generator.ViewModels {
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private CompositeDisposable Disposable { get; } = new CompositeDisposable();
+		
+		/// <summary>
+		/// Navigation Service
+		/// </summary>
+		private NavigationService navigationService;
+
+		/// <summary>
+		/// 戻るコマンド
+		/// </summary>
+		public ReactiveCommand BackToMainPage { get; } = new ReactiveCommand();
+
+		#region MainPage
 
 		/// <summary>
 		/// 初期設定に遷移するコマンド
@@ -58,11 +72,44 @@ namespace Generator.ViewModels {
 		/// </summary>
 		public ReactiveCommand TransitionToEquipablePlaceCreating { get; } = new ReactiveCommand();
 
+		#endregion
+
+		#region EquipablePlace
 
 		/// <summary>
-		/// Navigation Service
+		/// 保存コマンド
 		/// </summary>
-		private NavigationService navigationService;
+		public ReactiveCommand SaveToEquipablePlaceCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 装備可能箇所一覧
+		/// </summary>
+		public List<EquipablePlace> EquipablePlaces { set; get; } = new List<EquipablePlace>();
+
+		#endregion
+
+		#region Parameter
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToParameterCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 装備可能箇所一覧
+		/// </summary>
+		public List<Parameter> Parameters { set; get; } = new List<Parameter>();
+
+		#endregion
+
+		#region InitialSetting
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToInitialSettingCommand { get; } = new ReactiveCommand();
+
+		#endregion
 
 		/// <summary>
 		/// コンストラクタ
@@ -71,6 +118,29 @@ namespace Generator.ViewModels {
 		public MainPageViewModel( NavigationService navigationService ) {
 
 			this.navigationService = navigationService;
+
+			#region 仮
+
+			for( int i = 0 ; i< 100 ; i++ ) {
+				this.EquipablePlaces.Add( new EquipablePlace() {
+					id = i ,
+					name = "装備可能箇所" + i
+				} );
+			}
+			for( int i = 0 ; i < 100 ; i++ ) {
+				this.Parameters.Add( new Parameter() {
+					id = i ,
+					name = "パラメータ" + i
+				} );
+			}
+
+			#endregion
+
+			this.BackToMainPage
+				.Subscribe( _ => this.Transition( PageName.MainPage ) )
+				.AddTo( this.Disposable );
+
+			#region MainPage
 
 			this.TransitionToBodyCreating
 				.Subscribe( _ => this.Transition( PageName.CreatingBody ) )
@@ -103,7 +173,33 @@ namespace Generator.ViewModels {
 			this.TransitionToInitialSetting
 				.Subscribe( _ => this.Transition( PageName.InitialSetting ) )
 				.AddTo( this.Disposable );
+
+			#endregion
 			
+			#region EquipablePlace
+
+			this.SaveToEquipablePlaceCommand
+				.Subscribe( _ => this.SaveToEquipablePlace() )
+				.AddTo( this.Disposable );
+
+			#endregion
+
+			#region Parameter
+
+			this.SaveToParameterCommand
+				.Subscribe( _ => this.SaveToParameter() )
+				.AddTo( this.Disposable );
+
+			#endregion
+
+			#region InitialSetting
+
+			this.SaveToInitialSettingCommand
+				.Subscribe( _ => this.SaveToInitialSetting() )
+				.AddTo( this.Disposable );
+
+			#endregion
+
 		}
 		
 		public void Dispose() => this.Disposable.Dispose();
@@ -164,6 +260,45 @@ namespace Generator.ViewModels {
 			this.navigationService?.Navigate( page );
 
 		}
+
+		#region EquipablePlace
+
+		/// <summary>
+		/// 装備可能箇所の保存
+		/// </summary>
+		private void SaveToEquipablePlace() => Console.WriteLine( "装備可能箇所の保存" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">装備可能箇所ID</param>
+		public void DeleteEquipablePlace( int id ) => Console.WriteLine( $"装備可能箇所列削除:{id}" );
+
+		#endregion
+
+		#region Parameter
+
+		/// <summary>
+		/// パラメータの保存
+		/// </summary>
+		private void SaveToParameter() => Console.WriteLine( "パラメータの保存" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">パラメータID</param>
+		public void DeleteParameter( int id ) => Console.WriteLine( $"パラメータ列削除:{id}" );
+
+		#endregion
+		
+		#region InitialSetting
+
+		/// <summary>
+		/// 初期設定の保存
+		/// </summary>
+		private void SaveToInitialSetting() => Console.WriteLine( "初期設定保存" );
+
+		#endregion
 
 	}
 

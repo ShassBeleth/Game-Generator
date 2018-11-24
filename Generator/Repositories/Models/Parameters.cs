@@ -21,17 +21,27 @@ namespace Generator.Repositories.Models {
 	/// </summary>
 	[Serializable]
 	public class Parameter {
-		
+
 		/// <summary>
-		/// パラメータID
+		/// ID
 		/// </summary>
 		public int id;
 
 		/// <summary>
-		/// パラメータ名
+		/// ID
+		/// </summary>
+		public int Id { set => this.id = value; get => this.id; }
+
+		/// <summary>
+		/// 名前
 		/// </summary>
 		public string name;
-		
+
+		/// <summary>
+		/// 名前
+		/// </summary>
+		public string Name { set => this.name = value; get => this.name; }
+
 	}
 
 }
