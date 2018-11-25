@@ -14,7 +14,13 @@ namespace Generator.Views.Pages {
 		/// </summary>
 		public CreatingParameterPage() => this.InitializeComponent();
 
+		/// <summary>
+		/// 列削除
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		public void Delete( object sender , RoutedEventArgs e ) => ( (MainPageViewModel)this.DataContext ).DeleteParameter( (int)( (Button)sender ).Tag );
 
 	}
+
 }

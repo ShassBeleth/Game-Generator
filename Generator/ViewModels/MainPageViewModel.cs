@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Reactive.Disposables;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Navigation;
+using System.Xml;
 using Generator.Repositories.Models;
 using Generator.Views.Pages;
 using Reactive.Bindings;
@@ -18,8 +24,26 @@ namespace Generator.ViewModels {
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		/// <summary>
+		/// 削除
+		/// </summary>
 		private CompositeDisposable Disposable { get; } = new CompositeDisposable();
-		
+
+		/// <summary>
+		/// 画面名
+		/// </summary>
+		private enum PageName {
+			CreatingBody,
+			CreatingChapter,
+			CreatingEquipablePlace,
+			CreatingEquipment,
+			CreatingParameterChip,
+			CreatingParameter,
+			CreatingSave,
+			InitialSetting,
+			MainPage
+		}
+
 		/// <summary>
 		/// Navigation Service
 		/// </summary>
@@ -105,9 +129,26 @@ namespace Generator.ViewModels {
 		#region InitialSetting
 
 		/// <summary>
+		/// フォルダパス
+		/// </summary>
+		private string folderPath = "test";
+		/// <summary>
+		/// /フォルダパス
+		/// </summary>
+		public string FolderPath {
+			set => this.SetProperty( ref this.folderPath , value );
+			get => this.folderPath;
+		}
+
+		/// <summary>
 		/// 保存コマンド
 		/// </summary>
 		public ReactiveCommand SaveToInitialSettingCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// フォルダ選択コマンド
+		/// </summary>
+		public ReactiveCommand SelectFolderCommand { get; } = new ReactiveCommand();
 
 		#endregion
 
@@ -116,8 +157,10 @@ namespace Generator.ViewModels {
 		/// </summary>
 		/// <param name="navigationService">NavigationService</param>
 		public MainPageViewModel( NavigationService navigationService ) {
+			Log( "コンストラクタ" );
 
 			this.navigationService = navigationService;
+			Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
 
 			#region 仮
 
@@ -194,29 +237,35 @@ namespace Generator.ViewModels {
 
 			#region InitialSetting
 
+			this.FolderPath = this.GetDataFolderPath();
+
 			this.SaveToInitialSettingCommand
 				.Subscribe( _ => this.SaveToInitialSetting() )
+				.AddTo( this.Disposable );
+
+			this.SelectFolderCommand
+				.Subscribe( _ => this.SelectFolder() )
 				.AddTo( this.Disposable );
 
 			#endregion
 
 		}
 		
-		public void Dispose() => this.Disposable.Dispose();
+		private void SetProperty<T>( 
+			ref T field , 
+			T value , 
+			[CallerMemberName]string propertyName = null 
+		) {
+			field = value;
+			this.PropertyChanged?.Invoke( this , new PropertyChangedEventArgs( propertyName ) );
+		}
 
 		/// <summary>
-		/// 画面名
+		/// 削除
 		/// </summary>
-		private enum PageName {
-			CreatingBody ,
-			CreatingChapter ,
-			CreatingEquipablePlace ,
-			CreatingEquipment ,
-			CreatingParameterChip ,
-			CreatingParameter ,
-			CreatingSave ,
-			InitialSetting ,
-			MainPage
+		public void Dispose() {
+			Log( "削除" );
+			this.Disposable.Dispose();
 		}
 
 		/// <summary>
@@ -290,15 +339,109 @@ namespace Generator.ViewModels {
 		public void DeleteParameter( int id ) => Console.WriteLine( $"パラメータ列削除:{id}" );
 
 		#endregion
-		
+
 		#region InitialSetting
+
+		/// <summary>
+		/// データフォルダのパス取得
+		/// </summary>
+		/// <returns>データフォルダのパス</returns>
+		private string GetDataFolderPath() {
+
+			// configのパスを取得
+			string appConfigPath;
+			{
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				appConfigPath = Path.Combine(
+					Path.GetDirectoryName( assembly.Location ) ,
+					"Generator.exe.config"
+				);
+			}
+			Log( $"App.configのパス:{appConfigPath}" );
+
+			// XmlDocumentからDataフォルダのパスを取得
+			XmlDocument doc = new XmlDocument();
+			string dataFolderPath = null;
+			doc.Load( appConfigPath );
+			{
+				foreach( XmlNode node in doc[ "configuration" ][ "appSettings" ] ) {
+					if( node.Name == "add" ) {
+						if( node.Attributes.GetNamedItem( "key" ).Value == "DataFolderPath" ) {
+							dataFolderPath = node.Attributes.GetNamedItem( "value" ).Value;
+						}
+					}
+				}
+			}
+			Log( $"Dataフォルダのパス:{dataFolderPath}" );
+			return dataFolderPath;
+		}
 
 		/// <summary>
 		/// 初期設定の保存
 		/// </summary>
-		private void SaveToInitialSetting() => Console.WriteLine( "初期設定保存" );
+		private void SaveToInitialSetting() {
+			Log( "初期設定保存" );
+
+			// configのパスを取得
+			string appConfigPath;
+			{
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				appConfigPath = Path.Combine( 
+					Path.GetDirectoryName( assembly.Location ) , 
+					"Generator.exe.config" 
+				);
+			}
+			Log( $"App.configのパス:{appConfigPath}" );
+
+			// XmlDocumentに値を書き込む
+			XmlDocument doc = new XmlDocument();
+			doc.Load( appConfigPath );
+			{
+
+				XmlNode node = doc[ "configuration" ][ "appSettings" ];
+
+				// addノードを新規に追加
+				{
+					XmlElement addNode = doc.CreateElement( "add" );
+					addNode.SetAttribute( "key" , "DataFolderPath" );
+					addNode.SetAttribute( "value" , this.FolderPath );
+					node.AppendChild( addNode );
+				}
+
+			}
+			doc.Save( appConfigPath );
+
+			Log( "保存成功！" );
+		}
+
+		/// <summary>
+		/// フォルダ選択
+		/// </summary>
+		private void SelectFolder() {
+			FolderBrowserDialog dialog = new FolderBrowserDialog {
+				Description = "フォルダを選択してください"
+			};
+			if( dialog.ShowDialog() == DialogResult.OK ) {
+				Log( "ダイアログOK返ってきた" );
+				this.FolderPath = dialog.SelectedPath;
+				Log( $"フォルダパス:{this.FolderPath}" );
+			}
+			else {
+				Log( "ダイアログOK以外が返ってきた" );
+			}
+		}
 
 		#endregion
+
+		/// <summary>
+		/// ログ出力
+		/// </summary>
+		/// <param name="message">メッセージ</param>
+		private static void Log( string message ) {
+			StackFrame callerFrame = new StackFrame( 1 );
+			string methodName = callerFrame.GetMethod().Name;
+			Console.WriteLine( $"{DateTime.Now.ToString( "hh:MM:ss" )}:{methodName}:{message}" );
+		}
 
 	}
 

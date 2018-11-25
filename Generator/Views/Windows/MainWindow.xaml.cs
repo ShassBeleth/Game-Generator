@@ -1,7 +1,5 @@
-﻿using System.Windows.Forms;
-using System.Windows.Navigation;
+﻿using System.Windows.Navigation;
 using Generator.ViewModels;
-using Generator.Views.Pages;
 
 namespace Generator.Views.Windows {
 
@@ -17,8 +15,7 @@ namespace Generator.Views.Windows {
 			this.InitializeComponent();
 			this.DataContext = new MainPageViewModel( this.NavigationService );
 		}
-
-
+		
 	}
 
 }

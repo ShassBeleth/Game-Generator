@@ -1,7 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
-using System.Windows.Navigation;
-using Generator.ViewModels;
+﻿using System.Windows.Controls;
 
 namespace Generator.Views.Pages {
 
@@ -13,9 +10,8 @@ namespace Generator.Views.Pages {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		public MainPage() => InitializeComponent();
-
-
+		public MainPage() => this.InitializeComponent();
+		
 	}
 
 }
