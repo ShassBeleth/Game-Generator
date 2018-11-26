@@ -46,5 +46,11 @@ namespace Generator.Repositories {
 		/// </summary>
 		private EquipablePlaceRepository() => this.Rows = this.Load<EquipablePlaces>( this.FilePath ).rows;
 
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write()
+			=> this.Write<EquipablePlaces>( this.FilePath , new EquipablePlaces() { rows = this.Rows } );
+
 	}
 }

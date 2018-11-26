@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Security;
 using System.Text;
+using System.Xml;
 
 namespace Generator.Repositories {
 
@@ -10,12 +12,40 @@ namespace Generator.Repositories {
 	/// リポジトリ共通部
 	/// </summary>
 	public abstract class RepositoryBase {
-
-		/// <summary>
-		/// フォルダパス
-		/// </summary>
-		protected readonly string DirectoryPath = Directory.GetCurrentDirectory() + "/Data/";
 		
+		/// <summary>
+		/// フォルダパスの取得
+		/// </summary>
+		/// <returns>フォルダパス</returns>
+		private string GetDirectoryPath() {
+			// configのパスを取得
+			string appConfigPath;
+			{
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				appConfigPath = Path.Combine(
+					Path.GetDirectoryName( assembly.Location ) ,
+					"Generator.exe.config"
+				);
+			}
+
+			// XmlDocumentからDataフォルダのパスを取得
+			XmlDocument doc = new XmlDocument();
+			string directoryPath = "";
+			doc.Load( appConfigPath );
+			{
+				foreach( XmlNode node in doc[ "configuration" ][ "appSettings" ] ) {
+					if( node.Name == "add" ) {
+						if( node.Attributes.GetNamedItem( "key" ).Value == "DataFolderPath" ) {
+							directoryPath = node.Attributes.GetNamedItem( "value" ).Value;
+						}
+					}
+				}
+			}
+
+			return directoryPath;
+
+		}
+
 		/// <summary>
 		/// 読み込み
 		/// </summary>
@@ -26,7 +56,7 @@ namespace Generator.Repositories {
 
 			string jsonData = "";
 			try {
-				jsonData = File.ReadAllText( Path.Combine( this.DirectoryPath , filePath ) , Encoding.UTF8 );
+				jsonData = File.ReadAllText( Path.Combine( this.GetDirectoryPath() , filePath ) , Encoding.UTF8 );
 			}
 			catch( ArgumentNullException e ) {
 				Console.WriteLine( $"{e.Message}." );
@@ -86,9 +116,10 @@ namespace Generator.Repositories {
 			Console.WriteLine( $"Json Data is {jsonData}" );
 
 			// ディレクトリが存在するか確認
-			Console.WriteLine( $"Directory Path is {this.DirectoryPath}." );
+			string directoryPath = this.GetDirectoryPath();
+			Console.WriteLine( $"Directory Path is {directoryPath}." );
 			Console.WriteLine( $"File Path is {filePath}." );
-			string directoryName = Path.GetDirectoryName( Path.Combine( this.DirectoryPath , filePath ) );
+			string directoryName = Path.GetDirectoryName( Path.Combine( directoryPath , filePath ) );
 			Console.WriteLine( $"Directory Name is {directoryName}" );
 			if( !Directory.Exists( directoryName ) ) {
 				Console.WriteLine( "Directory Doesn't Exist." );
@@ -97,7 +128,7 @@ namespace Generator.Repositories {
 
 			// ファイルへ書き込み
 			try {
-				File.WriteAllText( Path.Combine( this.DirectoryPath , filePath ) , jsonData );
+				File.WriteAllText( Path.Combine( directoryPath , filePath ) , jsonData );
 			}
 			catch( ArgumentNullException e ) {
 				Console.WriteLine( $"{e.Message}." );
@@ -135,7 +166,7 @@ namespace Generator.Repositories {
 			Console.WriteLine( "Start" );
 			Console.WriteLine( $"File Path is {filePath}" );
 
-			File.Delete( this.DirectoryPath + filePath );
+			File.Delete( this.GetDirectoryPath() + filePath );
 
 			Console.WriteLine( "End" );
 		}

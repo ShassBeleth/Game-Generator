@@ -46,5 +46,17 @@ namespace Generator.Repositories {
 		/// </summary>
 		private ParameterRepository() => this.Rows = this.Load<Parameters>( this.FilePath ).rows;
 
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write()
+			=> this.Write<Parameters>( 
+					this.FilePath , 
+					new Parameters() {
+						rows = this.Rows
+					} 
+				);
+
 	}
+
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -10,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Navigation;
 using System.Xml;
+using Generator.Repositories;
 using Generator.Repositories.Models;
 using Generator.Views.Pages;
 using Reactive.Bindings;
@@ -159,26 +161,14 @@ namespace Generator.ViewModels {
 		public MainPageViewModel( NavigationService navigationService ) {
 			Log( "コンストラクタ" );
 
-			this.navigationService = navigationService;
-			Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
-
-			#region 仮
-
-			for( int i = 0 ; i< 100 ; i++ ) {
-				this.EquipablePlaces.Add( new EquipablePlace() {
-					id = i ,
-					name = "装備可能箇所" + i
-				} );
-			}
-			for( int i = 0 ; i < 100 ; i++ ) {
-				this.Parameters.Add( new Parameter() {
-					id = i ,
-					name = "パラメータ" + i
-				} );
-			}
-
+			#region データ取得
+			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
+			this.Parameters = ParameterRepository.GetInstance().Rows;
 			#endregion
 
+			this.navigationService = navigationService;
+			Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
+			
 			this.BackToMainPage
 				.Subscribe( _ => this.Transition( PageName.MainPage ) )
 				.AddTo( this.Disposable );
@@ -315,13 +305,21 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備可能箇所の保存
 		/// </summary>
-		private void SaveToEquipablePlace() => Console.WriteLine( "装備可能箇所の保存" );
+		private void SaveToEquipablePlace() {
+			Log( "呼ばれたー" );
+			EquipablePlaceRepository.GetInstance().Write();
+		}
 
 		/// <summary>
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">装備可能箇所ID</param>
-		public void DeleteEquipablePlace( int id ) => Console.WriteLine( $"装備可能箇所列削除:{id}" );
+		public void DeleteEquipablePlace( int id ) {
+			Log( "呼ばれたよー" );
+			this.EquipablePlaces.Remove(
+				this.EquipablePlaces.FirstOrDefault( row => row.Id == id )
+			);
+		}
 
 		#endregion
 
@@ -330,13 +328,16 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータの保存
 		/// </summary>
-		private void SaveToParameter() => Console.WriteLine( "パラメータの保存" );
+		private void SaveToParameter() => ParameterRepository.GetInstance().Write();
 
 		/// <summary>
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">パラメータID</param>
-		public void DeleteParameter( int id ) => Console.WriteLine( $"パラメータ列削除:{id}" );
+		public void DeleteParameter( int id )
+			=> this.Parameters.Remove(
+				this.Parameters.FirstOrDefault( row => row.Id == id )
+			);
 
 		#endregion
 
