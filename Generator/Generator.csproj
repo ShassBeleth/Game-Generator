@@ -133,6 +133,7 @@
     <Compile Include="Repositories\ParameterRepository.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />
     <Compile Include="Repositories\SaveRepository.cs" />
+    <Compile Include="Utils\Log.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Page Include="Views\Pages\CreatingBodyPage.xaml">
       <SubType>Designer</SubType>

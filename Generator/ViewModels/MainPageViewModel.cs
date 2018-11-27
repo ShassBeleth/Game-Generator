@@ -49,7 +49,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// Navigation Service
 		/// </summary>
-		private NavigationService navigationService;
+		private readonly NavigationService navigationService;
 
 		/// <summary>
 		/// 戻るコマンド
@@ -159,7 +159,7 @@ namespace Generator.ViewModels {
 		/// </summary>
 		/// <param name="navigationService">NavigationService</param>
 		public MainPageViewModel( NavigationService navigationService ) {
-			Log( "コンストラクタ" );
+			this.Log( "コンストラクタ" );
 
 			#region データ取得
 			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
@@ -167,7 +167,7 @@ namespace Generator.ViewModels {
 			#endregion
 
 			this.navigationService = navigationService;
-			Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
+			this.Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
 			
 			this.BackToMainPage
 				.Subscribe( _ => this.Transition( PageName.MainPage ) )
@@ -254,7 +254,7 @@ namespace Generator.ViewModels {
 		/// 削除
 		/// </summary>
 		public void Dispose() {
-			Log( "削除" );
+			this.Log( "削除" );
 			this.Disposable.Dispose();
 		}
 
@@ -305,21 +305,16 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備可能箇所の保存
 		/// </summary>
-		private void SaveToEquipablePlace() {
-			Log( "呼ばれたー" );
-			EquipablePlaceRepository.GetInstance().Write();
-		}
+		private void SaveToEquipablePlace() => EquipablePlaceRepository.GetInstance().Write();
 
 		/// <summary>
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">装備可能箇所ID</param>
-		public void DeleteEquipablePlace( int id ) {
-			Log( "呼ばれたよー" );
-			this.EquipablePlaces.Remove(
+		public void DeleteEquipablePlace( int id )
+			=> this.EquipablePlaces.Remove(
 				this.EquipablePlaces.FirstOrDefault( row => row.Id == id )
 			);
-		}
 
 		#endregion
 
@@ -358,7 +353,7 @@ namespace Generator.ViewModels {
 					"Generator.exe.config"
 				);
 			}
-			Log( $"App.configのパス:{appConfigPath}" );
+			this.Log( $"App.configのパス:{appConfigPath}" );
 
 			// XmlDocumentからDataフォルダのパスを取得
 			XmlDocument doc = new XmlDocument();
@@ -373,7 +368,7 @@ namespace Generator.ViewModels {
 					}
 				}
 			}
-			Log( $"Dataフォルダのパス:{dataFolderPath}" );
+			this.Log( $"Dataフォルダのパス:{dataFolderPath}" );
 			return dataFolderPath;
 		}
 
@@ -381,7 +376,7 @@ namespace Generator.ViewModels {
 		/// 初期設定の保存
 		/// </summary>
 		private void SaveToInitialSetting() {
-			Log( "初期設定保存" );
+			this.Log( "初期設定保存" );
 
 			// configのパスを取得
 			string appConfigPath;
@@ -392,7 +387,7 @@ namespace Generator.ViewModels {
 					"Generator.exe.config" 
 				);
 			}
-			Log( $"App.configのパス:{appConfigPath}" );
+			this.Log( $"App.configのパス:{appConfigPath}" );
 
 			// XmlDocumentに値を書き込む
 			XmlDocument doc = new XmlDocument();
@@ -412,7 +407,7 @@ namespace Generator.ViewModels {
 			}
 			doc.Save( appConfigPath );
 
-			Log( "保存成功！" );
+			this.Log( "保存成功！" );
 		}
 
 		/// <summary>
@@ -423,27 +418,17 @@ namespace Generator.ViewModels {
 				Description = "フォルダを選択してください"
 			};
 			if( dialog.ShowDialog() == DialogResult.OK ) {
-				Log( "ダイアログOK返ってきた" );
+				this.Log( "ダイアログOK返ってきた" );
 				this.FolderPath = dialog.SelectedPath;
-				Log( $"フォルダパス:{this.FolderPath}" );
+				this.Log( $"フォルダパス:{this.FolderPath}" );
 			}
 			else {
-				Log( "ダイアログOK以外が返ってきた" );
+				this.Log( "ダイアログOK以外が返ってきた" );
 			}
 		}
 
 		#endregion
-
-		/// <summary>
-		/// ログ出力
-		/// </summary>
-		/// <param name="message">メッセージ</param>
-		private static void Log( string message ) {
-			StackFrame callerFrame = new StackFrame( 1 );
-			string methodName = callerFrame.GetMethod().Name;
-			Console.WriteLine( $"{DateTime.Now.ToString( "hh:MM:ss" )}:{methodName}:{message}" );
-		}
-
+		
 	}
 
 }

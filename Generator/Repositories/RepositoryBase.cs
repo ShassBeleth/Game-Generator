@@ -59,45 +59,45 @@ namespace Generator.Repositories {
 				jsonData = File.ReadAllText( Path.Combine( this.GetDirectoryPath() , filePath ) , Encoding.UTF8 );
 			}
 			catch( ArgumentNullException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( ArgumentException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( PathTooLongException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( DirectoryNotFoundException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( FileNotFoundException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( IOException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( UnauthorizedAccessException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( NotSupportedException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( SecurityException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 
-			Console.WriteLine( $"Json Data is {jsonData}" );
+			this.Log( $"Json Data is {jsonData}" );
 
 			// 何かしらエラーの影響で取得したjsonデータが空文字だった場合nullを返す
 			if( "".Equals( jsonData ) ) {
-				Console.WriteLine( "Load File is Empty String." );
+				this.Log( "Load File is Empty String." );
 				return null;
 			}
 
 			// jsonデータをクラスに変換
 			T data = JsonConvert.DeserializeObject<T>( jsonData );
 			
-			Console.WriteLine( "End" );
+			this.Log( "End" );
 			return data;
 		}
 
@@ -108,21 +108,21 @@ namespace Generator.Repositories {
 		/// <param name="filePath">ファイルパス</param>
 		/// <param name="model">モデル</param>
 		protected void Write<T>( string filePath , T model ) {
-			Console.WriteLine( "Start" );
-			Console.WriteLine( $"File Path is {filePath}" );
+			this.Log( "Start" );
+			this.Log( $"File Path is {filePath}" );
 
 			// モデルをjsonに変換
 			string jsonData = JsonConvert.SerializeObject( model );
-			Console.WriteLine( $"Json Data is {jsonData}" );
+			this.Log( $"Json Data is {jsonData}" );
 
 			// ディレクトリが存在するか確認
 			string directoryPath = this.GetDirectoryPath();
-			Console.WriteLine( $"Directory Path is {directoryPath}." );
-			Console.WriteLine( $"File Path is {filePath}." );
+			this.Log( $"Directory Path is {directoryPath}." );
+			this.Log( $"File Path is {filePath}." );
 			string directoryName = Path.GetDirectoryName( Path.Combine( directoryPath , filePath ) );
-			Console.WriteLine( $"Directory Name is {directoryName}" );
+			this.Log( $"Directory Name is {directoryName}" );
 			if( !Directory.Exists( directoryName ) ) {
-				Console.WriteLine( "Directory Doesn't Exist." );
+				this.Log( "Directory Doesn't Exist." );
 				Directory.CreateDirectory( directoryName );
 			}
 
@@ -131,31 +131,31 @@ namespace Generator.Repositories {
 				File.WriteAllText( Path.Combine( directoryPath , filePath ) , jsonData );
 			}
 			catch( ArgumentNullException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( ArgumentException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( PathTooLongException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( DirectoryNotFoundException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( IOException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( UnauthorizedAccessException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( NotSupportedException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 			catch( SecurityException e ) {
-				Console.WriteLine( $"{e.Message}." );
+				this.Log( $"{e.Message}." );
 			}
 
-			Console.WriteLine( "End" );
+			this.Log( "End" );
 		}
 
 		/// <summary>
@@ -163,12 +163,12 @@ namespace Generator.Repositories {
 		/// </summary>
 		/// <param name="filePath">ファイルパス</param>
 		protected void Delete( string filePath ) {
-			Console.WriteLine( "Start" );
-			Console.WriteLine( $"File Path is {filePath}" );
+			this.Log( "Start" );
+			this.Log( $"File Path is {filePath}" );
 
 			File.Delete( this.GetDirectoryPath() + filePath );
 
-			Console.WriteLine( "End" );
+			this.Log( "End" );
 		}
 
 	}
