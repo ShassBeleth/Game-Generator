@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -24,12 +23,27 @@ namespace Generator.ViewModels {
 	/// </summary>
 	public class MainPageViewModel : INotifyPropertyChanged , IDisposable {
 
+		#region INotifyPropertyChangedとIDisposableの実装
+
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void SetProperty<T>(
+			ref T field ,
+			T value ,
+			[CallerMemberName]string propertyName = null
+		) {
+			field = value;
+			this.PropertyChanged?.Invoke( this , new PropertyChangedEventArgs( propertyName ) );
+		}
 
 		/// <summary>
 		/// 削除
 		/// </summary>
 		private CompositeDisposable Disposable { get; } = new CompositeDisposable();
+
+		#endregion
+
+		#region 共通部
 
 		/// <summary>
 		/// 画面名
@@ -55,6 +69,8 @@ namespace Generator.ViewModels {
 		/// 戻るコマンド
 		/// </summary>
 		public ReactiveCommand BackToMainPage { get; } = new ReactiveCommand();
+
+		#endregion
 
 		#region MainPage
 
@@ -100,6 +116,24 @@ namespace Generator.ViewModels {
 
 		#endregion
 
+		#region Body
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToBodyCommand { get; } = new ReactiveCommand();
+
+		#endregion
+
+		#region Chapter
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToChapterCommand { get; } = new ReactiveCommand();
+
+		#endregion
+
 		#region EquipablePlace
 
 		/// <summary>
@@ -114,6 +148,24 @@ namespace Generator.ViewModels {
 
 		#endregion
 
+		#region Equipment
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToEquipmentCommand { get; } = new ReactiveCommand();
+
+		#endregion
+
+		#region ParameterChip
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToParameterChipCommand { get; } = new ReactiveCommand();
+		
+		#endregion
+
 		#region Parameter
 
 		/// <summary>
@@ -125,6 +177,15 @@ namespace Generator.ViewModels {
 		/// 装備可能箇所一覧
 		/// </summary>
 		public List<Parameter> Parameters { set; get; } = new List<Parameter>();
+
+		#endregion
+
+		#region Save
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToSaveCommand { get; } = new ReactiveCommand();
 
 		#endregion
 
@@ -166,6 +227,8 @@ namespace Generator.ViewModels {
 			this.Parameters = ParameterRepository.GetInstance().Rows;
 			#endregion
 
+			#region 共通部
+
 			this.navigationService = navigationService;
 			this.Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
 			
@@ -173,6 +236,8 @@ namespace Generator.ViewModels {
 				.Subscribe( _ => this.Transition( PageName.MainPage ) )
 				.AddTo( this.Disposable );
 
+			#endregion
+			
 			#region MainPage
 
 			this.TransitionToBodyCreating
@@ -209,6 +274,22 @@ namespace Generator.ViewModels {
 
 			#endregion
 			
+			#region Body
+
+			this.SaveToBodyCommand
+				.Subscribe( _ => this.SaveToBody() )
+				.AddTo( this.Disposable );
+
+			#endregion
+			
+			#region Chapter
+
+			this.SaveToChapterCommand
+				.Subscribe( _ => this.SaveToChapter() )
+				.AddTo( this.Disposable );
+
+			#endregion
+
 			#region EquipablePlace
 
 			this.SaveToEquipablePlaceCommand
@@ -217,10 +298,34 @@ namespace Generator.ViewModels {
 
 			#endregion
 
+			#region Equipment
+
+			this.SaveToEquipmentCommand
+				.Subscribe( _ => this.SaveToEquipment() )
+				.AddTo( this.Disposable );
+
+			#endregion
+
+			#region ParameterChip
+
+			this.SaveToParameterChipCommand
+				.Subscribe( _ => this.SaveToParameterChip() )
+				.AddTo( this.Disposable );
+
+			#endregion
+
 			#region Parameter
 
 			this.SaveToParameterCommand
 				.Subscribe( _ => this.SaveToParameter() )
+				.AddTo( this.Disposable );
+
+			#endregion
+			
+			#region Save
+
+			this.SaveToSaveCommand
+				.Subscribe( _ => this.SaveToSave() )
 				.AddTo( this.Disposable );
 
 			#endregion
@@ -240,15 +345,8 @@ namespace Generator.ViewModels {
 			#endregion
 
 		}
-		
-		private void SetProperty<T>( 
-			ref T field , 
-			T value , 
-			[CallerMemberName]string propertyName = null 
-		) {
-			field = value;
-			this.PropertyChanged?.Invoke( this , new PropertyChangedEventArgs( propertyName ) );
-		}
+
+		#region 共通部
 
 		/// <summary>
 		/// 削除
@@ -300,6 +398,38 @@ namespace Generator.ViewModels {
 
 		}
 
+		#endregion
+
+		#region Body
+
+		/// <summary>
+		/// 素体の保存
+		/// </summary>
+		private void SaveToBody() => this.Log( "未実装" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">素体ID</param>
+		public void DeleteBody( int id ) => this.Log( "未実装" );
+
+		#endregion
+
+		#region Chapter
+
+		/// <summary>
+		/// チャプターの保存
+		/// </summary>
+		private void SaveToChapter() => this.Log( "未実装" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">チャプターID</param>
+		public void DeleteChapter( int id ) => this.Log( "未実装" );
+
+		#endregion
+
 		#region EquipablePlace
 
 		/// <summary>
@@ -318,6 +448,36 @@ namespace Generator.ViewModels {
 
 		#endregion
 
+		#region Equipment
+
+		/// <summary>
+		/// 装備の保存
+		/// </summary>
+		private void SaveToEquipment() => this.Log( "未実装" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">装備ID</param>
+		public void DeleteEquipment( int id ) => this.Log( "未実装" );
+
+		#endregion
+
+		#region ParameterChip
+
+		/// <summary>
+		/// パラメータチップの保存
+		/// </summary>
+		private void SaveToParameterChip() => this.Log( "未実装" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">パラメータチップID</param>
+		public void DeleteParameterChip( int id ) => this.Log( "未実装" );
+
+		#endregion
+
 		#region Parameter
 
 		/// <summary>
@@ -333,6 +493,21 @@ namespace Generator.ViewModels {
 			=> this.Parameters.Remove(
 				this.Parameters.FirstOrDefault( row => row.Id == id )
 			);
+
+		#endregion
+
+		#region Save
+
+		/// <summary>
+		/// セーブの保存
+		/// </summary>
+		private void SaveToSave() => this.Log( "未実装" );
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">セーブID</param>
+		public void DeleteSave( int id ) => this.Log( "未実装" );
 
 		#endregion
 
