@@ -18,6 +18,144 @@
 		<Grid
 			Grid.Row="0">
 
+			<Grid.RowDefinitions>
+				<RowDefinition Height="100" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="60" />
+			</Grid.RowDefinitions>
+
+			<!-- セーブ選択 -->
+			<Grid
+				Grid.Row="0" >
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<RadioButton
+					Grid.Column="0"
+					Content="セーブ1" />
+
+				<RadioButton
+					Grid.Column="1"
+					Content="セーブ2" />
+
+				<RadioButton
+					Grid.Column="2"
+					Content="セーブ3" />
+
+				<RadioButton
+					Grid.Column="3"
+					Content="セーブ4" />
+
+			</Grid>
+			
+			<!-- セーブデータ内容 -->
+			<Grid
+				Grid.Row="1">
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="100" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<!-- オプション情報 -->
+				<Grid
+					Grid.Row="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<CheckBox
+						Grid.Column="0"
+						Content="カメラ移動を水平方向に反転させるかどうか" />
+					<CheckBox
+						Grid.Column="1"
+						Content="カメラ移動を垂直方向に反転させるかどうか" />
+				</Grid>
+
+				<!-- 紐づくテーブルのチェック -->
+				<Grid
+					Grid.Row="1" >
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="50" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<!-- チャプター一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="0"
+						Content="クリア済みチャプター一覧" 
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="0" 
+						Margin="5,5,5,5"></DataGrid>
+
+					<!-- 素体一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Content="所持している素体一覧"  
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="1" 
+						Margin="5,5,5,5"></DataGrid>
+
+					<!-- パラメータチップ一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="2"
+						Content="所持しているパラメータチップ一覧"  
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="2" 
+						Margin="5,5,5,5"></DataGrid>
+
+					<!-- 装備一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="3"
+						Content="所持している装備一覧"  
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="3" 
+						Margin="5,5,5,5"></DataGrid>
+
+				</Grid>
+
+			</Grid>
+
+			<Grid
+				Grid.Row="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="200" />
+				</Grid.ColumnDefinitions>
+
+				<Button
+					Grid.Column ="1"
+					Content="削除"
+					Margin="5,5,5,5" />
+
+			</Grid>
+
 		</Grid>
 
 		<!-- 下部ボタン -->
