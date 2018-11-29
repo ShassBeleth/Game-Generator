@@ -187,6 +187,127 @@ namespace Generator.ViewModels {
 		/// </summary>
 		public ReactiveCommand SaveToSaveCommand { get; } = new ReactiveCommand();
 
+		/// <summary>
+		/// セーブ1が選択状態かどうか
+		/// </summary>
+		public bool isSelectedSave1 = false;
+
+		/// <summary>
+		/// セーブ1が選択状態かどうか
+		/// </summary>
+		public bool IsSelectedSave1 {
+			set => this.SetProperty( ref this.isSelectedSave1 , value );
+			get => this.isSelectedSave1;
+		}
+
+		/// <summary>
+		/// セーブ2が選択状態かどうか
+		/// </summary>
+		public bool isSelectedSave2 = true;
+
+		/// <summary>
+		/// セーブ2が選択状態かどうか
+		/// </summary>
+		public bool IsSelectedSave2 {
+			set => this.SetProperty( ref this.isSelectedSave2 , value );
+			get => this.isSelectedSave2;
+		}
+
+		/// <summary>
+		/// セーブ3が選択状態かどうか
+		/// </summary>
+		public bool isSelectedSave3 = false;
+
+		/// <summary>
+		/// セーブ3が選択状態かどうか
+		/// </summary>
+		public bool IsSelectedSave3 {
+			set => this.SetProperty( ref this.isSelectedSave3 , value );
+			get => this.isSelectedSave3;
+		}
+
+		/// <summary>
+		/// セーブ4が選択状態かどうか
+		/// </summary>
+		public bool isSelectedSave4 = false;
+
+		/// <summary>
+		/// セーブ4が選択状態かどうか
+		/// </summary>
+		public bool IsSelectedSave4 {
+			set => this.SetProperty( ref this.isSelectedSave4 , value );
+			get => this.isSelectedSave4;
+		}
+
+		/// <summary>
+		/// 所持しているデータ
+		/// </summary>
+		public class HavingData {
+
+			/// <summary>
+			/// 所持しているかどうか
+			/// </summary>
+			public bool Having { set; get; }
+
+			/// <summary>
+			/// 名前
+			/// </summary>
+			public string Name { set; get; }
+
+		}
+
+		/// <summary>
+		/// クリア済みチャプター状況一覧
+		/// </summary>
+		private List<HavingData> clearedChapters = new List<HavingData>();
+
+		/// <summary>
+		/// クリア済みチャプター状況一覧
+		/// </summary>
+		public List<HavingData> ClearedChapters {
+			set => this.SetProperty( ref this.clearedChapters , value );
+			get => this.clearedChapters;
+		}
+		
+		/// <summary>
+		/// 所持している素体一覧
+		/// </summary>
+		private List<HavingData> havingBodies = new List<HavingData>();
+
+		/// <summary>
+		/// 所持している素体一覧
+		/// </summary>
+		public List<HavingData> HavingBodies {
+			set => this.SetProperty( ref this.havingBodies , value );
+			get => this.havingBodies;
+		}
+
+		/// <summary>
+		/// 所持しているパラメータチップ一覧
+		/// </summary>
+		private List<HavingData> havingParameterChips = new List<HavingData>();
+
+		/// <summary>
+		/// 所持しているパラメータチップ一覧
+		/// </summary>
+		public List<HavingData> HavingParameterChips {
+			set => this.SetProperty( ref this.havingParameterChips , value );
+			get => this.havingParameterChips;
+		}
+
+		/// <summary>
+		/// 所持している装備一覧
+		/// </summary>
+		private List<HavingData> havingEquipments = new List<HavingData>();
+
+		/// <summary>
+		/// 所持している装備一覧
+		/// </summary>
+		public List<HavingData> HavingEquipments {
+			set => this.SetProperty( ref this.havingEquipments , value );
+			get => this.havingEquipments;
+		}
+
 		#endregion
 
 		#region InitialSetting
@@ -225,6 +346,33 @@ namespace Generator.ViewModels {
 			#region データ取得
 			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
 			this.Parameters = ParameterRepository.GetInstance().Rows;
+
+			// TODO 仮
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.HavingBodies.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "素体" + i
+				} );
+			}
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.HavingParameterChips.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "パラメータチップ" + i
+				} );
+			}
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.HavingEquipments.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "装備" + i
+				} );
+			}
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.ClearedChapters.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "チャプター" + i
+				} );
+			}
+
 			#endregion
 
 			#region 共通部

@@ -19,7 +19,7 @@
 			Grid.Row="0">
 
 			<Grid.RowDefinitions>
-				<RowDefinition Height="100" />
+				<RowDefinition Height="auto" />
 				<RowDefinition Height="*" />
 				<RowDefinition Height="60" />
 			</Grid.RowDefinitions>
@@ -37,19 +37,28 @@
 
 				<RadioButton
 					Grid.Column="0"
-					Content="セーブ1" />
+					Content="セーブ1" 
+					GroupName="Saves" 
+					IsChecked="{Binding IsSelectedSave1}"/>
 
 				<RadioButton
 					Grid.Column="1"
-					Content="セーブ2" />
+					Content="セーブ2" 
+					GroupName="Saves" 
+					IsChecked="{Binding IsSelectedSave2}" />
 
 				<RadioButton
 					Grid.Column="2"
-					Content="セーブ3" />
+					Content="セーブ3" 
+					GroupName="Saves" 
+					IsChecked="{Binding IsSelectedSave3}"/>
 
 				<RadioButton
 					Grid.Column="3"
-					Content="セーブ4" />
+					Content="セーブ4" 
+					GroupName="Saves"
+					IsChecked="{Binding IsSelectedSave4}"/>
+
 
 			</Grid>
 			
@@ -58,7 +67,7 @@
 				Grid.Row="1">
 
 				<Grid.RowDefinitions>
-					<RowDefinition Height="100" />
+					<RowDefinition Height="auto" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
 
@@ -83,7 +92,7 @@
 					Grid.Row="1" >
 
 					<Grid.RowDefinitions>
-						<RowDefinition Height="50" />
+						<RowDefinition Height="auto" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 
@@ -103,7 +112,21 @@
 					<DataGrid
 						Grid.Row="1"
 						Grid.Column="0" 
-						Margin="5,5,5,5"></DataGrid>
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding ClearedChapters}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="クリア済み"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="チャプター名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
 
 					<!-- 素体一覧 -->
 					<Label
@@ -114,7 +137,21 @@
 					<DataGrid
 						Grid.Row="1"
 						Grid.Column="1" 
-						Margin="5,5,5,5"></DataGrid>
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding HavingBodies}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="所持"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="素体名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
 
 					<!-- パラメータチップ一覧 -->
 					<Label
@@ -125,7 +162,21 @@
 					<DataGrid
 						Grid.Row="1"
 						Grid.Column="2" 
-						Margin="5,5,5,5"></DataGrid>
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding HavingParameterChips}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="所持"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="パラメータチップ名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
 
 					<!-- 装備一覧 -->
 					<Label
@@ -136,7 +187,21 @@
 					<DataGrid
 						Grid.Row="1"
 						Grid.Column="3" 
-						Margin="5,5,5,5"></DataGrid>
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding HavingEquipments}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="所持"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="装備名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
 
 				</Grid>
 
