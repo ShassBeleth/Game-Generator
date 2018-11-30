@@ -19,7 +19,7 @@
 			Grid.Row="0">
 
 			<Grid.RowDefinitions>
-				<RowDefinition Height="100" />
+				<RowDefinition Height="auto" />
 				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 
@@ -32,8 +32,8 @@
 					<ColumnDefinition Width="200" />
 				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
-					<RowDefinition Height="*" />
-					<RowDefinition Height="*" />
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
 				</Grid.RowDefinitions>
 
 				<!-- ラベル -->
