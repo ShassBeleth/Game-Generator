@@ -70,6 +70,33 @@ namespace Generator.ViewModels {
 		/// </summary>
 		public ReactiveCommand BackToMainPage { get; } = new ReactiveCommand();
 
+		/// <summary>
+		/// 所持しているデータ
+		/// </summary>
+		public class HavingData {
+
+			/// <summary>
+			/// ID
+			/// </summary>
+			public int Id { set; get; }
+
+			/// <summary>
+			/// 所持しているかどうか
+			/// </summary>
+			public bool Having { set; get; }
+
+			/// <summary>
+			/// 名前
+			/// </summary>
+			public string Name { set; get; }
+
+			/// <summary>
+			/// 所持数
+			/// </summary>
+			public int Num { set; get; }
+
+		}
+
 		#endregion
 
 		#region MainPage
@@ -123,6 +150,32 @@ namespace Generator.ViewModels {
 		/// </summary>
 		public ReactiveCommand SaveToBodyCommand { get; } = new ReactiveCommand();
 
+		/// <summary>
+		/// 装備可能箇所
+		/// </summary>
+		private List<HavingData> equipablePlaceOfBody = new List<HavingData>();
+
+		/// <summary>
+		/// 装備可能箇所
+		/// </summary>
+		public List<HavingData> EquipablePlacesOfBody {
+			set => this.SetProperty( ref this.equipablePlaceOfBody , value );
+			get => this.equipablePlaceOfBody;
+		}
+
+		/// <summary>
+		/// 素体効果
+		/// </summary>
+		private List<HavingData> effectsOfBody = new List<HavingData>();
+
+		/// <summary>
+		/// 素体効果
+		/// </summary>
+		public List<HavingData> EffectsOfBody {
+			set => this.SetProperty( ref this.effectsOfBody , value );
+			get => this.effectsOfBody;
+		}
+
 		#endregion
 
 		#region Chapter
@@ -151,6 +204,58 @@ namespace Generator.ViewModels {
 		#region Equipment
 
 		/// <summary>
+		/// 装備できる装備可能箇所
+		/// </summary>
+		private List<HavingData> equipmentsEquipableInEquipablePalces = new List<HavingData>();
+
+		/// <summary>
+		/// 装備できる装備可能箇所
+		/// </summary>
+		public List<HavingData> EquipmentsEquipableInEquipablePalces {
+			set => this.SetProperty( ref this.equipmentsEquipableInEquipablePalces , value );
+			get => this.equipmentsEquipableInEquipablePalces;
+		}
+
+		/// <summary>
+		/// 装備すると増える装備可能箇所
+		/// </summary>
+		private List<HavingData> equippedWhenIncreasingEquipablePlaces = new List<HavingData>();
+
+		/// <summary>
+		/// 装備すると増える装備可能箇所
+		/// </summary>
+		public List<HavingData> EquippedWhenIncreasingEquipablePlaces {
+			set => this.SetProperty( ref this.equippedWhenIncreasingEquipablePlaces , value );
+			get => this.equippedWhenIncreasingEquipablePlaces;
+		}
+
+		/// <summary>
+		/// 装備すると装備できなくなる装備可能箇所
+		/// </summary>
+		private List<HavingData> equippedWhenUnequippingEquipablePlaces = new List<HavingData>();
+
+		/// <summary>
+		/// 装備すると装備できなくなる装備可能箇所
+		/// </summary>
+		public List<HavingData> EquippedWhenUnequippingEquipablePlaces {
+			set => this.SetProperty( ref this.equippedWhenUnequippingEquipablePlaces , value );
+			get => this.equippedWhenUnequippingEquipablePlaces;
+		}
+
+		/// <summary>
+		/// 装備の効果
+		/// </summary>
+		private List<HavingData> effectsOfEquipment = new List<HavingData>();
+
+		/// <summary>
+		/// 装備の効果
+		/// </summary>
+		public List<HavingData> EffectsOfEquipment {
+			set => this.SetProperty( ref this.effectsOfEquipment , value );
+			get => this.effectsOfEquipment;
+		}
+
+		/// <summary>
 		/// 保存コマンド
 		/// </summary>
 		public ReactiveCommand SaveToEquipmentCommand { get; } = new ReactiveCommand();
@@ -158,6 +263,19 @@ namespace Generator.ViewModels {
 		#endregion
 
 		#region ParameterChip
+
+		/// <summary>
+		/// パラメータチップの効果
+		/// </summary>
+		private List<HavingData> effectsOfParameterChips = new List<HavingData>();
+
+		/// <summary>
+		/// パラメータチップの効果
+		/// </summary>
+		public List<HavingData> EffectsOfParameterChips {
+			set => this.SetProperty( ref this.effectsOfParameterChips , value );
+			get => this.effectsOfParameterChips;
+		}
 
 		/// <summary>
 		/// 保存コマンド
@@ -238,24 +356,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.isSelectedSave4 , value );
 			get => this.isSelectedSave4;
 		}
-
-		/// <summary>
-		/// 所持しているデータ
-		/// </summary>
-		public class HavingData {
-
-			/// <summary>
-			/// 所持しているかどうか
-			/// </summary>
-			public bool Having { set; get; }
-
-			/// <summary>
-			/// 名前
-			/// </summary>
-			public string Name { set; get; }
-
-		}
-
+		
 		/// <summary>
 		/// クリア済みチャプター状況一覧
 		/// </summary>
@@ -347,32 +448,6 @@ namespace Generator.ViewModels {
 			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
 			this.Parameters = ParameterRepository.GetInstance().Rows;
 
-			// TODO 仮
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.HavingBodies.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "素体" + i
-				} );
-			}
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.HavingParameterChips.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "パラメータチップ" + i
-				} );
-			}
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.HavingEquipments.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "装備" + i
-				} );
-			}
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.ClearedChapters.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "チャプター" + i
-				} );
-			}
-
 			#endregion
 
 			#region 共通部
@@ -423,7 +498,21 @@ namespace Generator.ViewModels {
 			#endregion
 			
 			#region Body
-
+			
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.EquipablePlacesOfBody.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "装備可能箇所" + i
+				} );
+				this.EffectsOfBody.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "パラメータ" + i ,
+					Num = i
+				} );
+			}
+			
 			this.SaveToBodyCommand
 				.Subscribe( _ => this.SaveToBody() )
 				.AddTo( this.Disposable );
@@ -448,6 +537,30 @@ namespace Generator.ViewModels {
 
 			#region Equipment
 
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.EquipmentsEquipableInEquipablePalces.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "装備可能箇所" + i
+				} );
+				this.EquippedWhenIncreasingEquipablePlaces.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "装備可能箇所" + i
+				} );
+				this.EquippedWhenUnequippingEquipablePlaces.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "装備可能箇所" + i
+				} );
+				this.EffectsOfEquipment.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "パラメータ" + i ,
+					Num = i
+				} );
+			}
+
 			this.SaveToEquipmentCommand
 				.Subscribe( _ => this.SaveToEquipment() )
 				.AddTo( this.Disposable );
@@ -455,6 +568,15 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region ParameterChip
+
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.EffectsOfParameterChips.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "パラメータ" + i ,
+					Num = i
+				} );
+			}
 
 			this.SaveToParameterChipCommand
 				.Subscribe( _ => this.SaveToParameterChip() )
@@ -469,8 +591,34 @@ namespace Generator.ViewModels {
 				.AddTo( this.Disposable );
 
 			#endregion
-			
+
 			#region Save
+			// TODO 仮
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.HavingBodies.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "素体" + i
+				} );
+			}
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.HavingParameterChips.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "パラメータチップ" + i
+				} );
+			}
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.HavingEquipments.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "装備" + i
+				} );
+			}
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.ClearedChapters.Add( new HavingData() {
+					Having = i % 2 == 0 ,
+					Name = "チャプター" + i
+				} );
+			}
+
 
 			this.SaveToSaveCommand
 				.Subscribe( _ => this.SaveToSave() )
