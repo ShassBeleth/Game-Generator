@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Generator.Repositories.Models {
 
@@ -12,7 +13,7 @@ namespace Generator.Repositories.Models {
 		/// <summary>
 		/// 保持している素体一覧
 		/// </summary>
-		public List<HavingBody> rows;
+		public List<HavingBody> rows = new List<HavingBody>();
 
 	}
 
@@ -26,11 +27,21 @@ namespace Generator.Repositories.Models {
 		/// セーブID
 		/// </summary>
 		public int saveId;
+		/// <summary>
+		/// セーブID
+		/// </summary>
+		[IgnoreDataMember]
+		public int SaveId { get => this.saveId; set => this.saveId = value; }
 
 		/// <summary>
 		/// 素体ID
 		/// </summary>
 		public int bodyId;
+		/// <summary>
+		/// 素体ID
+		/// </summary>
+		[IgnoreDataMember]
+		public int BodyId { get => this.bodyId; set => this.bodyId = value; }
 
 	}
 

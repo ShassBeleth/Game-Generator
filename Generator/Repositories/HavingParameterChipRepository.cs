@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private HavingParameterChipRepository() => this.Rows = this.Load<HavingParameterChips>( this.FilePath ).rows;
+		private HavingParameterChipRepository() {
+			if( this.Load<HavingParameterChips>( this.FilePath ) == null ) {
+				this.Write<HavingParameterChips>( this.FilePath , new HavingParameterChips() { rows = new List<HavingParameterChip>() } );
+			}
+			this.Rows = this.Load<HavingParameterChips>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<HavingParameterChips>( this.FilePath , new HavingParameterChips() { rows = this.Rows } );
 
 	}
+
 }

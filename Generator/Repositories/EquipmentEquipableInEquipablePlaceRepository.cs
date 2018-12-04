@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private EquipmentEquipableInEquipablePlaceRepository() => this.Rows = this.Load<EquipmentsEquipableInEquipablePlaces>( this.FilePath ).rows;
+		private EquipmentEquipableInEquipablePlaceRepository() {
+			if( this.Load<EquipmentsEquipableInEquipablePlaces>( this.FilePath ) == null ) {
+				this.Write<EquipmentsEquipableInEquipablePlaces>( this.FilePath , new EquipmentsEquipableInEquipablePlaces() { rows = new List<EquipmentEquipableInEquipablePlace>() } );
+			}
+			this.Rows = this.Load<EquipmentsEquipableInEquipablePlaces>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<EquipmentsEquipableInEquipablePlaces>( this.FilePath , new EquipmentsEquipableInEquipablePlaces() { rows = this.Rows } );
 
 	}
+
 }

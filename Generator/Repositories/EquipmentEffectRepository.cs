@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private EquipmentEffectRepository() => this.Rows = this.Load<EquipmentEffects>( this.FilePath ).rows;
+		private EquipmentEffectRepository() {
+			if( this.Load<EquipmentEffects>( this.FilePath ) == null ) {
+				this.Write<EquipmentEffects>( this.FilePath , new EquipmentEffects() { rows = new List<EquipmentEffect>() } );
+			}
+			this.Rows = this.Load<EquipmentEffects>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<EquipmentEffects>( this.FilePath , new EquipmentEffects() { rows = this.Rows } );
 
 	}
+
 }

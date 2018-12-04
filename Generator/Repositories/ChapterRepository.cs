@@ -45,7 +45,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private ChapterRepository() => this.Rows = this.Load<Chapters>( this.FilePath ).rows;
-		
+		private ChapterRepository() {
+			if( this.Load<Chapters>( this.FilePath ) == null ) {
+				this.Write<Chapters>( this.FilePath , new Chapters() { rows = new List<Chapter>() } );
+			}
+			this.Rows = this.Load<Chapters>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<Chapters>( this.FilePath , new Chapters() { rows = this.Rows } );
+
 	}
+
 }

@@ -47,6 +47,60 @@ namespace Generator.Repositories {
 		}
 
 		/// <summary>
+		/// ディレクトリが存在するか確認
+		/// </summary>
+		/// <param name="filePath">ファイルパス</param>
+		/// <returns>存在している場合TRUE</returns>
+		private bool ExistsDirectory( string filePath ) {
+			string directoryPath = this.GetDirectoryPath();
+			this.Log( $"Directory Path is {directoryPath}." );
+			this.Log( $"File Path is {filePath}." );
+			string directoryName = Path.GetDirectoryName( Path.Combine( directoryPath , filePath ) );
+			this.Log( $"Directory Name is {directoryName}" );
+			return Directory.Exists( directoryName );
+		}
+
+		/// <summary>
+		/// ディレクトリ作成
+		/// </summary>
+		/// <param name="filePath">ファイルパス</param>
+		private void CreateDirectory( string filePath ) {
+			string directoryPath = this.GetDirectoryPath();
+			this.Log( $"Directory Path is {directoryPath}." );
+			this.Log( $"File Path is {filePath}." );
+			string directoryName = Path.GetDirectoryName( Path.Combine( directoryPath , filePath ) );
+			this.Log( $"Directory Name is {directoryName}" );
+			Directory.CreateDirectory( directoryName );
+		}
+
+		/// <summary>
+		/// ファイルが存在するか確認
+		/// </summary>
+		/// <param name="filePath">ファイルパス</param>
+		/// <returns>存在している場合TRUE</returns>
+		private bool ExistsFile( string filePath ) {
+			string directoryPath = this.GetDirectoryPath();
+			this.Log( $"Directory Path is {directoryPath}." );
+			this.Log( $"File Path is {filePath}." );
+			string absolutePath = Path.Combine( directoryPath , filePath );
+			this.Log( $"Absolute Path is {absolutePath}" );
+			return File.Exists( absolutePath );
+		}
+
+		/// <summary>
+		/// ファイル作成
+		/// </summary>
+		/// <param name="filePath">ファイルパス</param>
+		private void CreateFile( string filePath ) {
+			string directoryPath = this.GetDirectoryPath();
+			this.Log( $"Directory Path is {directoryPath}." );
+			this.Log( $"File Path is {filePath}." );
+			string absolutePath = Path.Combine( directoryPath , filePath );
+			this.Log( $"Absolute Path is {absolutePath}" );
+			File.CreateText( absolutePath );
+		}
+		
+		/// <summary>
 		/// 読み込み
 		/// </summary>
 		/// <typeparam name="T">読み込むデータの型</typeparam>
@@ -54,6 +108,18 @@ namespace Generator.Repositories {
 		/// <returns>読み込んだデータモデル</returns>
 		protected T Load<T>( string filePath ) where T : class {
 
+			// ディレクトリが存在するか確認
+			if( !this.ExistsDirectory( filePath ) ) {
+				this.Log( "Directory Doesn't Exist." );
+				this.CreateDirectory( filePath );
+			}
+
+			// ファイルが存在するか確認
+			if( !this.ExistsFile( filePath ) ) {
+				this.Log( "File Doesn't Exist." );
+				this.CreateFile( filePath );
+			}
+			
 			string jsonData = "";
 			try {
 				jsonData = File.ReadAllText( Path.Combine( this.GetDirectoryPath() , filePath ) , Encoding.UTF8 );
@@ -91,7 +157,7 @@ namespace Generator.Repositories {
 			// 何かしらエラーの影響で取得したjsonデータが空文字だった場合nullを返す
 			if( "".Equals( jsonData ) ) {
 				this.Log( "Load File is Empty String." );
-				return null;
+				return default( T );
 			}
 
 			// jsonデータをクラスに変換

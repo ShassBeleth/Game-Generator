@@ -44,7 +44,17 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private BodyRepository() => this.Rows = this.Load<Bodies>( this.FilePath ).rows;
+		private BodyRepository() {
+			if( this.Load<Bodies>( this.FilePath ) == null ) {
+				this.Write<Bodies>( this.FilePath , new Bodies() { rows = new List<Body>() } );
+			}
+			this.Rows = this.Load<Bodies>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<Bodies>( this.FilePath , new Bodies() { rows = this.Rows } );
 
 	}
 

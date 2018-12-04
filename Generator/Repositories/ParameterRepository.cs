@@ -44,19 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private ParameterRepository() => this.Rows = this.Load<Parameters>( this.FilePath ).rows;
+		private ParameterRepository() {
+			if( this.Load<Parameters>( this.FilePath ) == null ) {
+				this.Write<Parameters>( this.FilePath , new Parameters() { rows = new List<Parameter>() } );
+			}
+			this.Rows = this.Load<Parameters>( this.FilePath ).rows;
+		}
 
 		/// <summary>
 		/// 書き込み
 		/// </summary>
-		public void Write()
-			=> this.Write<Parameters>( 
-					this.FilePath , 
-					new Parameters() {
-						rows = this.Rows
-					} 
-				);
-
+		public void Write() => this.Write<Parameters>( this.FilePath , new Parameters() { rows = this.Rows } );
+		
 	}
 
 }

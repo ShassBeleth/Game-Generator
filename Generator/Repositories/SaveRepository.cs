@@ -44,15 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private SaveRepository() => this.Rows = this.Load<Saves>( this.FilePath ).rows;
+		private SaveRepository() {
+			if( this.Load<Saves>( this.FilePath ) == null ) {
+				this.Write<Saves>( this.FilePath , new Saves() { rows = new List<Save>() } );
+			}
+			this.Rows = this.Load<Saves>( this.FilePath ).rows;
+		}
 
 		/// <summary>
-		/// セーブデータの書き込み
+		/// 書き込み
 		/// </summary>
-		public void Write()
-			=> this.Write<Saves>( this.FilePath , new Saves() {
-				rows = this.Rows
-			} );
+		public void Write() => this.Write<Saves>( this.FilePath , new Saves() { rows = this.Rows } );
 
 	}
+
 }

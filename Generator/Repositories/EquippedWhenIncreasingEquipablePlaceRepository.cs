@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private EquippedWhenIncreasingEquipablePlaceRepository() => this.Rows = this.Load<EquippedWhenIncreasingEquipablePlaces>( this.FilePath ).rows;
+		private EquippedWhenIncreasingEquipablePlaceRepository() {
+			if( this.Load<EquippedWhenIncreasingEquipablePlaces>( this.FilePath ) == null ) {
+				this.Write<EquippedWhenIncreasingEquipablePlaces>( this.FilePath , new EquippedWhenIncreasingEquipablePlaces() { rows = new List<EquippedWhenIncreasingEquipablePlace>() } );
+			}
+			this.Rows = this.Load<EquippedWhenIncreasingEquipablePlaces>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<EquippedWhenIncreasingEquipablePlaces>( this.FilePath , new EquippedWhenIncreasingEquipablePlaces() { rows = this.Rows } );
 
 	}
+
 }

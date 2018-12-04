@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private ChapterClearStatusRepository() => this.Rows = this.Load<ChapterClearStatuses>( this.FilePath ).rows;
+		private ChapterClearStatusRepository() {
+			if( this.Load<ChapterClearStatuses>( this.FilePath ) == null ) {
+				this.Write<ChapterClearStatuses>( this.FilePath , new ChapterClearStatuses() { rows = new List<ChapterClearStatus>() } );
+			}
+			this.Rows = this.Load<ChapterClearStatuses>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<ChapterClearStatuses>( this.FilePath , new ChapterClearStatuses() { rows = this.Rows } );
 
 	}
+
 }

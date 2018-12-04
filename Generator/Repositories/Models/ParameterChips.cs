@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Generator.Repositories.Models {
 
@@ -12,7 +13,7 @@ namespace Generator.Repositories.Models {
 		/// <summary>
 		/// パラメータチップ一覧
 		/// </summary>
-		public List<ParameterChip> rows;
+		public List<ParameterChip> rows = new List<ParameterChip>();
 	}
 
 	/// <summary>
@@ -20,6 +21,27 @@ namespace Generator.Repositories.Models {
 	/// </summary>
 	[Serializable]
 	public class ParameterChip {
+
+		/// <summary>
+		/// パラメータチップID
+		/// </summary>
+		public int id;
+		/// <summary>
+		/// パラメータチップID
+		/// </summary>
+		[IgnoreDataMember]
+		public int Id { get => this.id; set => this.id = value; }
+
+		/// <summary>
+		/// チップ名
+		/// </summary>
+		public string name;
+		/// <summary>
+		/// チップ名
+		/// </summary>
+		[IgnoreDataMember]
+		public string Name { get => this.name; set => this.name = value; }
+
 	}
 
 }

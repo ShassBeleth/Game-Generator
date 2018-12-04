@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private BodyEffectRepository() => this.Rows = this.Load<BodyEffects>( this.FilePath ).rows;
+		private BodyEffectRepository() {
+			if( this.Load<BodyEffects>( this.FilePath ) == null ) {
+				this.Write<BodyEffects>( this.FilePath , new BodyEffects() { rows = new List<BodyEffect>() } );
+			}
+			this.Rows = this.Load<BodyEffects>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<BodyEffects>( this.FilePath , new BodyEffects() { rows = this.Rows } );
 
 	}
+
 }

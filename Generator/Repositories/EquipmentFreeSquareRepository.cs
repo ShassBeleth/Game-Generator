@@ -44,7 +44,18 @@ namespace Generator.Repositories {
 		/// <summary>
 		/// コンストラクタ
 		/// </summary>
-		private EquipmentFreeSquareRepository() => this.Rows = this.Load<EquipmentFreeSquares>( this.FilePath ).rows;
+		private EquipmentFreeSquareRepository() {
+			if( this.Load<EquipmentFreeSquares>( this.FilePath ) == null ) {
+				this.Write<EquipmentFreeSquares>( this.FilePath , new EquipmentFreeSquares() { rows = new List<EquipmentFreeSquare>() } );
+			}
+			this.Rows = this.Load<EquipmentFreeSquares>( this.FilePath ).rows;
+		}
+
+		/// <summary>
+		/// 書き込み
+		/// </summary>
+		public void Write() => this.Write<EquipmentFreeSquares>( this.FilePath , new EquipmentFreeSquares() { rows = this.Rows } );
 
 	}
+
 }

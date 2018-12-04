@@ -443,13 +443,7 @@ namespace Generator.ViewModels {
 		/// <param name="navigationService">NavigationService</param>
 		public MainPageViewModel( NavigationService navigationService ) {
 			this.Log( "コンストラクタ" );
-
-			#region データ取得
-			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
-			this.Parameters = ParameterRepository.GetInstance().Rows;
-
-			#endregion
-
+			
 			#region 共通部
 
 			this.navigationService = navigationService;
@@ -496,22 +490,25 @@ namespace Generator.ViewModels {
 				.AddTo( this.Disposable );
 
 			#endregion
-			
+
 			#region Body
-			
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+
+			EquipablePlaceRepository.GetInstance().Rows.ForEach( row =>
 				this.EquipablePlacesOfBody.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "装備可能箇所" + i
-				} );
+					Having = false ,
+					Id = row.Id ,
+					Name = row.Name
+				} )
+			);
+
+			ParameterRepository.GetInstance().Rows.ForEach( row =>
 				this.EffectsOfBody.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "パラメータ" + i ,
-					Num = i
-				} );
-			}
+					Id = row.Id ,
+					Name = row.Name ,
+					Having = false ,
+					Num = 0
+				} )
+			);
 			
 			this.SaveToBodyCommand
 				.Subscribe( _ => this.SaveToBody() )
@@ -528,6 +525,8 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region EquipablePlace
+
+			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
 
 			this.SaveToEquipablePlaceCommand
 				.Subscribe( _ => this.SaveToEquipablePlace() )
@@ -585,6 +584,8 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region Parameter
+			
+			this.Parameters = ParameterRepository.GetInstance().Rows;
 
 			this.SaveToParameterCommand
 				.Subscribe( _ => this.SaveToParameter() )
@@ -701,7 +702,12 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 素体の保存
 		/// </summary>
-		private void SaveToBody() => this.Log( "未実装" );
+		private void SaveToBody() {
+			BodyRepository.GetInstance().Write();
+			BodyFreeSquareRepository.GetInstance().Write();
+			BodyEffectRepository.GetInstance().Write();
+			BodyEquipablePlaceRepository.GetInstance().Write();
+		}
 
 		/// <summary>
 		/// 一覧削除
@@ -716,7 +722,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// チャプターの保存
 		/// </summary>
-		private void SaveToChapter() => this.Log( "未実装" );
+		private void SaveToChapter() => ChapterRepository.GetInstance().Write();
 
 		/// <summary>
 		/// 一覧削除
@@ -749,7 +755,15 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備の保存
 		/// </summary>
-		private void SaveToEquipment() => this.Log( "未実装" );
+		private void SaveToEquipment() {
+			EquipmentRepository.GetInstance().Write();
+			EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Write();
+			EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Write();
+			EquipmentEquipableInEquipablePlaceRepository.GetInstance().Write();
+			EquipmentEffectRepository.GetInstance().Write();
+			DesignatedPlaceToEquipmentByEffectRepository.GetInstance().Write();
+			EquipmentFreeSquareRepository.GetInstance().Write();
+		}
 
 		/// <summary>
 		/// 一覧削除
@@ -764,7 +778,13 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータチップの保存
 		/// </summary>
-		private void SaveToParameterChip() => this.Log( "未実装" );
+		private void SaveToParameterChip() {
+
+			ParameterChipRepository.GetInstance().Write();
+			ParameterChipEffectRepository.GetInstance().Write();
+			ParameterChipSquareRepository.GetInstance().Write();
+
+		}
 
 		/// <summary>
 		/// 一覧削除
@@ -797,7 +817,15 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// セーブの保存
 		/// </summary>
-		private void SaveToSave() => this.Log( "未実装" );
+		private void SaveToSave() {
+
+			SaveRepository.GetInstance().Write();
+			HavingBodyRepository.GetInstance().Write();
+			HavingParameterChipRepository.GetInstance().Write();
+			HavingEquipmentRepository.GetInstance().Write();
+			ChapterClearStatusRepository.GetInstance().Write();
+			
+		}
 
 		/// <summary>
 		/// 一覧削除
