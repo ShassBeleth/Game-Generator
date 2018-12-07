@@ -21,7 +21,7 @@ namespace Generator.ViewModels {
 	/// <summary>
 	/// メインWindowのViewModel
 	/// </summary>
-	public class MainPageViewModel : INotifyPropertyChanged , IDisposable {
+	public class MainPageViewModel : INotifyPropertyChanged, IDisposable {
 
 		#region INotifyPropertyChangedとIDisposableの実装
 
@@ -281,7 +281,7 @@ namespace Generator.ViewModels {
 		/// 保存コマンド
 		/// </summary>
 		public ReactiveCommand SaveToParameterChipCommand { get; } = new ReactiveCommand();
-		
+
 		#endregion
 
 		#region Parameter
@@ -356,7 +356,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.isSelectedSave4 , value );
 			get => this.isSelectedSave4;
 		}
-		
+
 		/// <summary>
 		/// クリア済みチャプター状況一覧
 		/// </summary>
@@ -369,7 +369,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.clearedChapters , value );
 			get => this.clearedChapters;
 		}
-		
+
 		/// <summary>
 		/// 所持している素体一覧
 		/// </summary>
@@ -443,18 +443,18 @@ namespace Generator.ViewModels {
 		/// <param name="navigationService">NavigationService</param>
 		public MainPageViewModel( NavigationService navigationService ) {
 			this.Log( "コンストラクタ" );
-			
+
 			#region 共通部
 
 			this.navigationService = navigationService;
 			this.Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
-			
+
 			this.BackToMainPage
 				.Subscribe( _ => this.Transition( PageName.MainPage ) )
 				.AddTo( this.Disposable );
 
 			#endregion
-			
+
 			#region MainPage
 
 			this.TransitionToBodyCreating
@@ -470,13 +470,13 @@ namespace Generator.ViewModels {
 				.AddTo( this.Disposable );
 
 			this.TransitionToEquipmentCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingEquipment) )
+				.Subscribe( _ => this.Transition( PageName.CreatingEquipment ) )
 				.AddTo( this.Disposable );
 
 			this.TransitionToParameterChipCreating
 				.Subscribe( _ => this.Transition( PageName.CreatingParameterChip ) )
 				.AddTo( this.Disposable );
-			
+
 			this.TransitionToParameterCreating
 				.Subscribe( _ => this.Transition( PageName.CreatingParameter ) )
 				.AddTo( this.Disposable );
@@ -484,38 +484,102 @@ namespace Generator.ViewModels {
 			this.TransitionToSaveCreating
 				.Subscribe( _ => this.Transition( PageName.CreatingSave ) )
 				.AddTo( this.Disposable );
-			
+
 			this.TransitionToInitialSetting
 				.Subscribe( _ => this.Transition( PageName.InitialSetting ) )
 				.AddTo( this.Disposable );
 
 			#endregion
 
-			#region Body
+			EquipmentRepository.GetInstance().Rows.ForEach( row => {
+				this.HavingEquipments.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name
+				} );
+			} );
 
-			EquipablePlaceRepository.GetInstance().Rows.ForEach( row =>
+			EquipablePlaceRepository.GetInstance().Rows.ForEach( row => {
 				this.EquipablePlacesOfBody.Add( new HavingData() {
 					Having = false ,
 					Id = row.Id ,
 					Name = row.Name
-				} )
-			);
+				} );
+				this.EquipmentsEquipableInEquipablePalces.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name
+				} );
+				this.EquippedWhenIncreasingEquipablePlaces.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name
+				} );
+				this.EquippedWhenUnequippingEquipablePlaces.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name
+				} );
+			} );
 
-			ParameterRepository.GetInstance().Rows.ForEach( row =>
+			ParameterRepository.GetInstance().Rows.ForEach( row => {
 				this.EffectsOfBody.Add( new HavingData() {
 					Id = row.Id ,
 					Name = row.Name ,
 					Having = false ,
 					Num = 0
-				} )
-			);
-			
+				} );
+				this.EffectsOfEquipment.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name ,
+					Num = row.Id
+				} );
+				this.EffectsOfParameterChips.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name ,
+					Num = row.Id
+				} );
+			} );
+
+			BodyRepository.GetInstance().Rows.ForEach( row => {
+				this.HavingBodies.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name
+				} );
+			} );
+
+			ParameterChipRepository.GetInstance().Rows.ForEach( row => {
+				this.HavingParameterChips.Add( new HavingData() {
+					Id = row.Id ,
+					Having = row.Id % 2 == 0 ,
+					Name = row.Name ,
+				} );
+			} );
+
+			// TODO 仮
+			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
+				this.ClearedChapters.Add( new HavingData() {
+					Id = i ,
+					Having = i % 2 == 0 ,
+					Name = "チャプター" + i
+				} );
+			}
+
+			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
+
+			this.Parameters = ParameterRepository.GetInstance().Rows;
+
+			#region Body
+
 			this.SaveToBodyCommand
 				.Subscribe( _ => this.SaveToBody() )
 				.AddTo( this.Disposable );
 
 			#endregion
-			
+
 			#region Chapter
 
 			this.SaveToChapterCommand
@@ -526,8 +590,6 @@ namespace Generator.ViewModels {
 
 			#region EquipablePlace
 
-			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
-
 			this.SaveToEquipablePlaceCommand
 				.Subscribe( _ => this.SaveToEquipablePlace() )
 				.AddTo( this.Disposable );
@@ -535,30 +597,6 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region Equipment
-
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.EquipmentsEquipableInEquipablePalces.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "装備可能箇所" + i
-				} );
-				this.EquippedWhenIncreasingEquipablePlaces.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "装備可能箇所" + i
-				} );
-				this.EquippedWhenUnequippingEquipablePlaces.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "装備可能箇所" + i
-				} );
-				this.EffectsOfEquipment.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "パラメータ" + i ,
-					Num = i
-				} );
-			}
 
 			this.SaveToEquipmentCommand
 				.Subscribe( _ => this.SaveToEquipment() )
@@ -568,15 +606,6 @@ namespace Generator.ViewModels {
 
 			#region ParameterChip
 
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.EffectsOfParameterChips.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "パラメータ" + i ,
-					Num = i
-				} );
-			}
-
 			this.SaveToParameterChipCommand
 				.Subscribe( _ => this.SaveToParameterChip() )
 				.AddTo( this.Disposable );
@@ -584,8 +613,6 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region Parameter
-			
-			this.Parameters = ParameterRepository.GetInstance().Rows;
 
 			this.SaveToParameterCommand
 				.Subscribe( _ => this.SaveToParameter() )
@@ -594,32 +621,6 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region Save
-			// TODO 仮
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.HavingBodies.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "素体" + i
-				} );
-			}
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.HavingParameterChips.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "パラメータチップ" + i
-				} );
-			}
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.HavingEquipments.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "装備" + i
-				} );
-			}
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.ClearedChapters.Add( new HavingData() {
-					Having = i % 2 == 0 ,
-					Name = "チャプター" + i
-				} );
-			}
-
 
 			this.SaveToSaveCommand
 				.Subscribe( _ => this.SaveToSave() )
@@ -824,7 +825,7 @@ namespace Generator.ViewModels {
 			HavingParameterChipRepository.GetInstance().Write();
 			HavingEquipmentRepository.GetInstance().Write();
 			ChapterClearStatusRepository.GetInstance().Write();
-			
+
 		}
 
 		/// <summary>
@@ -881,9 +882,9 @@ namespace Generator.ViewModels {
 			string appConfigPath;
 			{
 				Assembly assembly = Assembly.GetExecutingAssembly();
-				appConfigPath = Path.Combine( 
-					Path.GetDirectoryName( assembly.Location ) , 
-					"Generator.exe.config" 
+				appConfigPath = Path.Combine(
+					Path.GetDirectoryName( assembly.Location ) ,
+					"Generator.exe.config"
 				);
 			}
 			this.Log( $"App.configのパス:{appConfigPath}" );
@@ -927,7 +928,7 @@ namespace Generator.ViewModels {
 		}
 
 		#endregion
-		
+
 	}
 
 }
