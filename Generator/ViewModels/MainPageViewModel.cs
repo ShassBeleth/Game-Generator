@@ -308,7 +308,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// セーブ1が選択状態かどうか
 		/// </summary>
-		public bool isSelectedSave1 = false;
+		private bool isSelectedSave1 = true;
 
 		/// <summary>
 		/// セーブ1が選択状態かどうか
@@ -321,7 +321,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// セーブ2が選択状態かどうか
 		/// </summary>
-		public bool isSelectedSave2 = true;
+		private bool isSelectedSave2 = false;
 
 		/// <summary>
 		/// セーブ2が選択状態かどうか
@@ -334,7 +334,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// セーブ3が選択状態かどうか
 		/// </summary>
-		public bool isSelectedSave3 = false;
+		private bool isSelectedSave3 = false;
 
 		/// <summary>
 		/// セーブ3が選択状態かどうか
@@ -347,7 +347,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// セーブ4が選択状態かどうか
 		/// </summary>
-		public bool isSelectedSave4 = false;
+		private bool isSelectedSave4 = false;
 
 		/// <summary>
 		/// セーブ4が選択状態かどうか
@@ -356,6 +356,36 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.isSelectedSave4 , value );
 			get => this.isSelectedSave4;
 		}
+
+		/// <summary>
+		/// 水平方向のカメラを反転させるかどうか
+		/// </summary>
+		private bool isReverseHorizontalCamera = false;
+
+		/// <summary>
+		/// 水平方向のカメラを反転させるかどうか
+		/// </summary>
+		public bool IsReverseHorizontalCamera {
+			set => this.SetProperty( ref this.isReverseHorizontalCamera , value );
+			get => this.isReverseHorizontalCamera;
+		}
+
+		/// 垂直方向のカメラを反転させるかどうか
+		/// </summary>
+		private bool isReverseVerticalCamera = false;
+
+		/// <summary>
+		/// 垂直方向のカメラを反転させるかどうか
+		/// </summary>
+		public bool IsReverseVerticalCamera {
+			set => this.SetProperty( ref this.isReverseVerticalCamera , value );
+			get => this.isReverseVerticalCamera;
+		}
+
+		/// <summary>
+		/// ラジオボタン変更時コマンド
+		/// </summary>
+		public ReactiveCommand UpdateSelectedSaveIdCommand { get; } = new ReactiveCommand();
 
 		/// <summary>
 		/// クリア済みチャプター状況一覧
@@ -491,14 +521,6 @@ namespace Generator.ViewModels {
 
 			#endregion
 
-			EquipmentRepository.GetInstance().Rows.ForEach( row => {
-				this.HavingEquipments.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name
-				} );
-			} );
-
 			EquipablePlaceRepository.GetInstance().Rows.ForEach( row => {
 				this.EquipablePlacesOfBody.Add( new HavingData() {
 					Having = false ,
@@ -542,31 +564,6 @@ namespace Generator.ViewModels {
 					Num = row.Id
 				} );
 			} );
-
-			BodyRepository.GetInstance().Rows.ForEach( row => {
-				this.HavingBodies.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name
-				} );
-			} );
-
-			ParameterChipRepository.GetInstance().Rows.ForEach( row => {
-				this.HavingParameterChips.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name ,
-				} );
-			} );
-
-			// TODO 仮
-			foreach( int i in Enumerable.Range( 0 , 100 ) ) {
-				this.ClearedChapters.Add( new HavingData() {
-					Id = i ,
-					Having = i % 2 == 0 ,
-					Name = "チャプター" + i
-				} );
-			}
 
 			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
 
@@ -621,6 +618,17 @@ namespace Generator.ViewModels {
 			#endregion
 
 			#region Save
+
+			this.SelectSave( 0 );
+
+			this.UpdateSelectedSaveIdCommand
+				.Subscribe( _ => this.SelectSave(
+					this.IsSelectedSave1 ? 0 :
+					this.IsSelectedSave2 ? 1 :
+					this.IsSelectedSave3 ? 2 :
+					3
+				) )
+				.AddTo( this.Disposable );
 
 			this.SaveToSaveCommand
 				.Subscribe( _ => this.SaveToSave() )
@@ -816,15 +824,178 @@ namespace Generator.ViewModels {
 		#region Save
 
 		/// <summary>
+		/// セーブデータ選択
+		/// </summary>
+		/// <param name="saveId">セーブデータID</param>
+		private void SelectSave( int saveId ) {
+
+			this.Log( $"Save Id is {saveId}." );
+
+			Save save = SaveRepository.GetInstance().Rows
+				.FirstOrDefault( row => row.Id == saveId );
+			this.IsReverseHorizontalCamera = save.IsReverseHorizontalCamera;
+			this.IsReverseVerticalCamera = save.IsReverseVerticalCamera;
+			;
+
+			#region クリア済みチャプター一覧
+			{
+				// クリア済みのチャプターのIDを取得
+				IEnumerable<int> clearedChapterIds = ChapterClearStatusRepository.GetInstance().Rows
+					.Where( row => row.SaveId == saveId )
+					.Select( row => row.ChapterId );
+
+				List<HavingData> list = new List<HavingData>();
+				ChapterRepository.GetInstance().Rows.ForEach( row => {
+					list.Add( new HavingData() {
+						Id = row.Id ,
+						Name = row.Name ,
+						Having = clearedChapterIds.FirstOrDefault( id => id == row.id ) != 0 ,
+						Num = 0 ,
+					} );
+				} );
+				this.ClearedChapters = list;
+			}
+			#endregion
+
+			#region 所持している素体一覧
+			{
+
+				// 所持している素体のIDを取得
+				IEnumerable<int> havingBodyIds = HavingBodyRepository.GetInstance().Rows
+					.Where( row => row.SaveId == saveId )
+					.Select( row => row.BodyId );
+
+				List<HavingData> list = new List<HavingData>();
+				BodyRepository.GetInstance().Rows.ForEach( row => {
+					list.Add( new HavingData() {
+						Id = row.Id ,
+						Name = row.Name ,
+						Having = havingBodyIds.FirstOrDefault( id => id == row.id ) != 0 ,
+						Num = 0 ,
+					} );
+				} );
+				this.HavingBodies = list;
+
+			}
+			#endregion
+
+			#region 所持している装備一覧
+			{
+
+				// 所持している装備のIDを取得
+				IEnumerable<int> havingEquipmentIds = HavingEquipmentRepository.GetInstance().Rows
+					.Where( row => row.SaveId == saveId )
+					.Select( row => row.EquipmentId );
+
+				List<HavingData> list = new List<HavingData>();
+				EquipmentRepository.GetInstance().Rows.ForEach( row => {
+					list.Add( new HavingData() {
+						Id = row.Id ,
+						Name = row.Name ,
+						Having = havingEquipmentIds.FirstOrDefault( id => id == row.id ) != 0 ,
+						Num = 0 ,
+					} );
+				} );
+				this.HavingEquipments = list;
+
+			}
+			#endregion
+
+			#region 所持しているパラメータチップ一覧
+			{
+
+				// 所持しているパラメータチップのIDを取得
+				IEnumerable<int> havingParameterChipIds = HavingParameterChipRepository.GetInstance().Rows
+					.Where( row => row.SaveId == saveId )
+					.Select( row => row.ParameterChipId );
+				
+				List<HavingData> list = new List<HavingData>();
+				ParameterChipRepository.GetInstance().Rows.ForEach( row => {
+					list.Add( new HavingData() {
+						Id = row.Id ,
+						Name = row.Name ,
+						Having = havingParameterChipIds.FirstOrDefault( id => id == row.id ) != 0 ,
+						Num = 0 ,
+					} );
+				} );
+				this.HavingParameterChips = list;
+			}
+			#endregion
+
+		}
+
+		/// <summary>
 		/// セーブの保存
 		/// </summary>
 		private void SaveToSave() {
 
+			int saveId = 
+				this.IsSelectedSave1 ? 0 :
+				this.IsSelectedSave2 ? 1 :
+				this.IsSelectedSave3 ? 2 :
+				3;
+
+			#region オプション
+			Save save = SaveRepository.GetInstance().Rows
+				.FirstOrDefault( row => row.Id == saveId );
+			save.IsReverseHorizontalCamera = this.IsReverseHorizontalCamera;
+			save.IsReverseVerticalCamera = this.IsReverseVerticalCamera;
 			SaveRepository.GetInstance().Write();
-			HavingBodyRepository.GetInstance().Write();
-			HavingParameterChipRepository.GetInstance().Write();
-			HavingEquipmentRepository.GetInstance().Write();
-			ChapterClearStatusRepository.GetInstance().Write();
+			#endregion
+
+			#region 素体
+			{
+				// 選択中のセーブデータ以外を保持しておく
+				IEnumerable<HavingBody> another = HavingBodyRepository.GetInstance().Rows
+					.Where( row => row.SaveId != saveId );
+				// 画面上の一覧から新規にリストを作成する
+				IEnumerable<HavingBody> newList = this.HavingBodies
+					.Where( row => row.Having )
+					.Select( row => new HavingBody() {
+						SaveId = saveId ,
+						BodyId = row.Id
+					} );
+				HavingBodyRepository.GetInstance().Rows.Clear();
+				HavingBodyRepository.GetInstance().Rows.AddRange( another.Union( newList ).ToList() );
+				HavingBodyRepository.GetInstance().Write();
+			}
+			#endregion
+
+			#region 装備
+			{
+				// 選択中のセーブデータ以外を保持しておく
+				IEnumerable<HavingEquipment> another = HavingEquipmentRepository.GetInstance().Rows
+					.Where( row => row.SaveId != saveId );
+				// 画面上の一覧から新規にリストを作成する
+				IEnumerable<HavingEquipment> newList = this.HavingEquipments
+					.Where( row => row.Having )
+					.Select( row => new HavingEquipment() {
+						SaveId = saveId ,
+						EquipmentId = row.Id
+					} );
+				HavingEquipmentRepository.GetInstance().Rows.Clear();
+				HavingEquipmentRepository.GetInstance().Rows.AddRange( another.Union( newList ).ToList() );
+				HavingEquipmentRepository.GetInstance().Write();
+			}
+			#endregion
+
+			#region チャプター
+			{
+				// 選択中のセーブデータ以外を保持しておく
+				IEnumerable<ChapterClearStatus> another = ChapterClearStatusRepository.GetInstance().Rows
+					.Where( row => row.SaveId != saveId );
+				// 画面上の一覧から新規にリストを作成する
+				IEnumerable<ChapterClearStatus> newList = this.ClearedChapters
+					.Where( row => row.Having )
+					.Select( row => new ChapterClearStatus() {
+						SaveId = saveId ,
+						ChapterId = row.Id
+					} );
+				ChapterClearStatusRepository.GetInstance().Rows.Clear();
+				ChapterClearStatusRepository.GetInstance().Rows.AddRange( another.Union( newList ).ToList() );
+				ChapterClearStatusRepository.GetInstance().Write();
+			}
+			#endregion
 
 		}
 

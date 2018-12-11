@@ -39,26 +39,29 @@
 					Grid.Column="0"
 					Content="セーブ1" 
 					GroupName="Saves" 
-					IsChecked="{Binding IsSelectedSave1}"/>
+					IsChecked="{Binding IsSelectedSave1}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
 
 				<RadioButton
 					Grid.Column="1"
 					Content="セーブ2" 
 					GroupName="Saves" 
-					IsChecked="{Binding IsSelectedSave2}" />
+					IsChecked="{Binding IsSelectedSave2}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
 
 				<RadioButton
 					Grid.Column="2"
 					Content="セーブ3" 
 					GroupName="Saves" 
-					IsChecked="{Binding IsSelectedSave3}"/>
+					IsChecked="{Binding IsSelectedSave3}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
 
 				<RadioButton
 					Grid.Column="3"
 					Content="セーブ4" 
 					GroupName="Saves"
-					IsChecked="{Binding IsSelectedSave4}"/>
-
+					IsChecked="{Binding IsSelectedSave4}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
 
 			</Grid>
 			
@@ -81,10 +84,12 @@
 
 					<CheckBox
 						Grid.Column="0"
-						Content="カメラ移動を水平方向に反転させるかどうか" />
+						Content="カメラ移動を水平方向に反転させるかどうか" 
+						IsChecked="{Binding IsReverseHorizontalCamera}"/>
 					<CheckBox
 						Grid.Column="1"
-						Content="カメラ移動を垂直方向に反転させるかどうか" />
+						Content="カメラ移動を垂直方向に反転させるかどうか" 
+						IsChecked="{Binding IsReverseVerticalCamera}"/>
 				</Grid>
 
 				<!-- 紐づくテーブルのチェック -->
@@ -235,7 +240,7 @@
 			<!-- 保存ボタン-->
 			<Button
 				Grid.Column ="1"
-				Content="保存"
+				Content="保存(セーブ切替前に保存すること)"
 				Margin="5,5,5,5"
 				Command="{Binding SaveToSaveCommand}"
 				/>
