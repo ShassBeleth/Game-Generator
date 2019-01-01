@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -23,7 +24,26 @@ namespace Generator.ViewModels {
 	/// </summary>
 	public class MainPageViewModel : INotifyPropertyChanged, IDisposable {
 
-		#region INotifyPropertyChangedとIDisposableの実装
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="navigationService">NavigationService</param>
+		public MainPageViewModel( NavigationService navigationService ) {
+			this.Log( "Start" );
+			this.InitCommon( navigationService );
+			this.InitInitialSetting();
+			this.InitMainPage();
+			this.InitParameter();
+			this.InitEquipment();
+
+
+
+
+			this.InitialTemp();
+			this.Log( "End" );
+		}
+
+		#region 共通部
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -40,10 +60,14 @@ namespace Generator.ViewModels {
 		/// 削除
 		/// </summary>
 		private CompositeDisposable Disposable { get; } = new CompositeDisposable();
-
-		#endregion
-
-		#region 共通部
+		/// <summary>
+		/// 削除
+		/// </summary>
+		public void Dispose() {
+			this.Log( "Start" );
+			this.Disposable.Dispose();
+			this.Log( "End" );
+		}
 
 		/// <summary>
 		/// 画面名
@@ -59,11 +83,54 @@ namespace Generator.ViewModels {
 			InitialSetting,
 			MainPage
 		}
+		/// <summary>
+		/// 画面遷移
+		/// </summary>
+		/// <param name="pageName">遷移先画面名</param>
+		private void Transition( PageName pageName ) {
+			this.Log( "Start" );
+			Page page;
+			switch( pageName ) {
+				case PageName.CreatingBody:
+					page = new CreatingBodyPage();
+					break;
+				case PageName.CreatingChapter:
+					page = new CreatingChapterPage();
+					break;
+				case PageName.CreatingEquipablePlace:
+					page = new CreatingEquipablePlacePage();
+					break;
+				case PageName.CreatingEquipment:
+					page = new CreatingEquipmentPage();
+					break;
+				case PageName.CreatingParameterChip:
+					page = new CreatingParameterChipPage();
+					break;
+				case PageName.CreatingParameter:
+					page = new CreatingParameterPage();
+					break;
+				case PageName.CreatingSave:
+					page = new CreatingSavePage();
+					break;
+				case PageName.InitialSetting:
+					page = new InitialSettingPage();
+					break;
+				case PageName.MainPage:
+					page = new MainPage();
+					break;
+				default:
+					return;
+			}
+
+			this.navigationService?.Navigate( page );
+
+			this.Log( "End" );
+		}
 
 		/// <summary>
 		/// Navigation Service
 		/// </summary>
-		private readonly NavigationService navigationService;
+		private NavigationService navigationService;
 
 		/// <summary>
 		/// 戻るコマンド
@@ -71,30 +138,19 @@ namespace Generator.ViewModels {
 		public ReactiveCommand BackToMainPage { get; } = new ReactiveCommand();
 
 		/// <summary>
-		/// 所持しているデータ
+		/// 共通部初期設定
 		/// </summary>
-		public class HavingData {
+		/// <param name="navigationService">NavigationService</param>
+		private void InitCommon( NavigationService navigationService ) {
+			this.Log( "Start" );
 
-			/// <summary>
-			/// ID
-			/// </summary>
-			public int Id { set; get; }
+			this.navigationService = navigationService;
 
-			/// <summary>
-			/// 所持しているかどうか
-			/// </summary>
-			public bool Having { set; get; }
+			this.BackToMainPage
+				.Subscribe( _ => this.Transition( PageName.MainPage ) )
+				.AddTo( this.Disposable );
 
-			/// <summary>
-			/// 名前
-			/// </summary>
-			public string Name { set; get; }
-
-			/// <summary>
-			/// 所持数
-			/// </summary>
-			public int Num { set; get; }
-
+			this.Log( "End" );
 		}
 
 		#endregion
@@ -141,8 +197,483 @@ namespace Generator.ViewModels {
 		/// </summary>
 		public ReactiveCommand TransitionToEquipablePlaceCreating { get; } = new ReactiveCommand();
 
+		/// <summary>
+		/// 初期設定
+		/// </summary>
+		private void InitMainPage() {
+			this.Log( "Start" );
+
+			this.TransitionToBodyCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingBody ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToChapterCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingChapter ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToEquipablePlaceCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingEquipablePlace ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToEquipmentCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingEquipment ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToParameterChipCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingParameterChip ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToParameterCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingParameter ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToSaveCreating
+				.Subscribe( _ => this.Transition( PageName.CreatingSave ) )
+				.AddTo( this.Disposable );
+
+			this.TransitionToInitialSetting
+				.Subscribe( _ => this.Transition( PageName.InitialSetting ) )
+				.AddTo( this.Disposable );
+
+			this.Log( "End" );
+		}
+
 		#endregion
 
+		#region Parameter
+
+		/// <summary>
+		/// パラメータID
+		/// </summary>
+		private int parameterId = -1;
+
+		/// <summary>
+		/// パラメータID
+		/// </summary>
+		public int ParameterId {
+			set => this.SetProperty( ref this.parameterId , value );
+			get => this.parameterId;
+		}
+
+		/// <summary>
+		/// パラメータ名
+		/// </summary>
+		private string parameterName = "";
+
+		/// <summary>
+		/// パラメータ名
+		/// </summary>
+		public string ParameterName {
+			set => this.SetProperty( ref this.parameterName , value );
+			get => this.parameterName;
+		}
+
+		/// <summary>
+		/// 追加コマンド
+		/// </summary>
+		public ReactiveCommand AddParameterCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToParameterCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 装備可能箇所一覧
+		/// </summary>
+		public ObservableCollection<Parameter> Parameters { set; get; }
+
+		/// <summary>
+		/// パラメータの追加
+		/// </summary>
+		private void AddParameter() {
+			this.Log( "Start" );
+			this.Log( $"Parameter Id is {this.ParameterId}" );
+			this.Log( $"Parameter Name is {this.ParameterName}" );
+
+			if( this.ParameterId == -1 || "".Equals( this.ParameterName ) ) {
+				this.Log( "Parameter Id is -1 or Parameter Name is Empty" );
+				this.Log( "End" );
+				return;
+			}
+			this.Parameters.Add( new Parameter() {
+				Id = this.ParameterId ,
+				Name = this.ParameterName
+			} );
+
+			this.ParameterId = -1;
+			this.ParameterName = "";
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// パラメータの保存
+		/// </summary>
+		private void SaveToParameter() {
+			this.Log( "Start" );
+			ParameterRepository.GetInstance().Rows = this.Parameters.ToList();
+			ParameterRepository.GetInstance().Write();
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">パラメータID</param>
+		public void DeleteParameter( int id ) {
+			this.Log( "Start" );
+			this.Log( $"Id is {id}" );
+			this.Parameters.Remove(
+				this.Parameters.FirstOrDefault( row => row.Id == id )
+			);
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// パラメータ初期設定
+		/// </summary>
+		private void InitParameter() {
+			this.Log( "Start" );
+
+			this.Parameters = new ObservableCollection<Parameter>( ParameterRepository.GetInstance().Rows );
+
+			this.SaveToParameterCommand
+				.Subscribe( _ => this.SaveToParameter() )
+				.AddTo( this.Disposable );
+			this.AddParameterCommand
+				.Subscribe( _ => this.AddParameter() )
+				.AddTo( this.Disposable );
+
+			this.Log( "End" );
+		}
+
+		#endregion
+
+		#region EquipablePlace
+
+		/// <summary>
+		/// 装備可能箇所ID
+		/// </summary>
+		private int equipablePlaceId = -1;
+
+		/// <summary>
+		/// 装備可能箇所ID
+		/// </summary>
+		public int EquipablePlaceId {
+			set => this.SetProperty( ref this.equipablePlaceId , value );
+			get => this.equipablePlaceId;
+		}
+
+		/// <summary>
+		/// 装備可能箇所名
+		/// </summary>
+		private string equipablePlaceName = "";
+
+		/// <summary>
+		/// 装備可能箇所名
+		/// </summary>
+		public string EquipablePlaceName {
+			set => this.SetProperty( ref this.equipablePlaceName , value );
+			get => this.equipablePlaceName;
+		}
+
+		/// <summary>
+		/// 追加コマンド
+		/// </summary>
+		public ReactiveCommand AddEquipablePlaceCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToEquipablePlaceCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 装備可能箇所一覧
+		/// </summary>
+		public ObservableCollection<EquipablePlace> EquipablePlaces { set; get; }
+
+		/// <summary>
+		/// 装備可能箇所の追加
+		/// </summary>
+		private void AddEquipablePlace() {
+			this.Log( "Start" );
+			this.Log( $"Equipable Place Id is {this.EquipablePlaceId}" );
+			this.Log( $"Equipable Place Name is {this.EquipablePlaceName}" );
+
+			if( this.EquipablePlaceId == -1 || "".Equals( this.EquipablePlaceName ) ) {
+				this.Log( "Equipable Place Id is -1 or Equipable Place Name is Empty" );
+				this.Log( "End" );
+				return;
+			}
+			this.EquipablePlaces.Add( new EquipablePlace() {
+				Id = this.EquipablePlaceId ,
+				Name = this.EquipablePlaceName
+			} );
+
+			this.EquipablePlaceId = -1;
+			this.EquipablePlaceName = "";
+			
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備可能箇所の保存
+		/// </summary>
+		private void SaveToEquipablePlace() {
+			this.Log( "Start" );
+			EquipablePlaceRepository.GetInstance().Rows = this.EquipablePlaces.ToList();
+			EquipablePlaceRepository.GetInstance().Write();
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">装備可能箇所ID</param>
+		public void DeleteEquipablePlace( int id ) {
+			this.Log( "Start" );
+			this.Log( $" Id is {id}" );
+			this.EquipablePlaces.Remove(
+				this.EquipablePlaces.FirstOrDefault( row => row.Id == id )
+			);
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備可能箇所初期設定
+		/// </summary>
+		private void InitEquipment() {
+			this.Log( "Start" );
+
+			this.EquipablePlaces = new ObservableCollection<EquipablePlace>( EquipablePlaceRepository.GetInstance().Rows );
+
+			this.SaveToEquipablePlaceCommand
+				.Subscribe( _ => this.SaveToEquipablePlace() )
+				.AddTo( this.Disposable );
+			this.AddEquipablePlaceCommand
+				.Subscribe( _ => this.AddEquipablePlace() )
+				.AddTo( this.Disposable );
+
+			this.Log( "End" );
+		}
+		
+		#endregion
+
+		#region InitialSetting
+
+		/// <summary>
+		/// フォルダパス
+		/// </summary>
+		private string folderPath = "test";
+		/// <summary>
+		/// /フォルダパス
+		/// </summary>
+		public string FolderPath {
+			set => this.SetProperty( ref this.folderPath , value );
+			get => this.folderPath;
+		}
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToInitialSettingCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// フォルダ選択コマンド
+		/// </summary>
+		public ReactiveCommand SelectFolderCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 初期設定の初期設定
+		/// </summary>
+		private void InitInitialSetting() {
+			this.Log( "Start" );
+
+			this.FolderPath = this.GetDataFolderPath();
+
+			this.SaveToInitialSettingCommand
+				.Subscribe( _ => this.SaveToInitialSetting() )
+				.AddTo( this.Disposable );
+
+			this.SelectFolderCommand
+				.Subscribe( _ => this.SelectFolder() )
+				.AddTo( this.Disposable );
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// データフォルダのパス取得
+		/// </summary>
+		/// <returns>データフォルダのパス</returns>
+		private string GetDataFolderPath() {
+			this.Log( "Start" );
+
+			// configのパスを取得
+			string appConfigPath;
+			{
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				appConfigPath = Path.Combine(
+					Path.GetDirectoryName( assembly.Location ) ,
+					"Generator.exe.config"
+				);
+			}
+			this.Log( $"App.config Path is {appConfigPath}" );
+
+			// XmlDocumentからDataフォルダのパスを取得
+			XmlDocument doc = new XmlDocument();
+			string dataFolderPath = null;
+			doc.Load( appConfigPath );
+			{
+				foreach( XmlNode node in doc[ "configuration" ][ "appSettings" ] ) {
+					if( node.Name == "add" ) {
+						if( node.Attributes.GetNamedItem( "key" ).Value == "DataFolderPath" ) {
+							dataFolderPath = node.Attributes.GetNamedItem( "value" ).Value;
+						}
+					}
+				}
+			}
+			this.Log( $"Data Folder Path is {dataFolderPath}" );
+			this.Log( "End" );
+			return dataFolderPath;
+		}
+
+		/// <summary>
+		/// 初期設定の保存
+		/// </summary>
+		private void SaveToInitialSetting() {
+			this.Log( "Start" );
+
+			// configのパスを取得
+			string appConfigPath;
+			{
+				Assembly assembly = Assembly.GetExecutingAssembly();
+				appConfigPath = Path.Combine(
+					Path.GetDirectoryName( assembly.Location ) ,
+					"Generator.exe.config"
+				);
+			}
+			this.Log( $"App.config Path is {appConfigPath}" );
+
+			// XmlDocumentに値を書き込む
+			XmlDocument doc = new XmlDocument();
+			doc.Load( appConfigPath );
+			{
+
+				XmlNode node = doc[ "configuration" ][ "appSettings" ];
+
+				// addノードを新規に追加
+				{
+					XmlElement addNode = doc.CreateElement( "add" );
+					addNode.SetAttribute( "key" , "DataFolderPath" );
+					addNode.SetAttribute( "value" , this.FolderPath );
+					node.AppendChild( addNode );
+				}
+
+			}
+			doc.Save( appConfigPath );
+
+			this.Log( "Success" );
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// フォルダ選択
+		/// </summary>
+		private void SelectFolder() {
+			this.Log( "Start" );
+			FolderBrowserDialog dialog = new FolderBrowserDialog {
+				Description = "フォルダを選択してください"
+			};
+			if( dialog.ShowDialog() == DialogResult.OK ) {
+				this.Log( "Show Dialog is OK" );
+				this.FolderPath = dialog.SelectedPath;
+				this.Log( $"Folder Path is {this.FolderPath}" );
+			}
+			else {
+				this.Log( "Show Dialog is NOT OK" );
+			}
+			this.Log( "End" );
+		}
+
+
+		#endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		/// <summary>
+		/// 所持しているデータ
+		/// </summary>
+		public class HavingData {
+
+			/// <summary>
+			/// ID
+			/// </summary>
+			public int Id { set; get; }
+
+			/// <summary>
+			/// 所持しているかどうか
+			/// </summary>
+			public bool Having { set; get; }
+
+			/// <summary>
+			/// 名前
+			/// </summary>
+			public string Name { set; get; }
+
+			/// <summary>
+			/// 所持数
+			/// </summary>
+			public int Num { set; get; }
+
+		}
+		
 		#region Body
 
 		/// <summary>
@@ -184,20 +715,6 @@ namespace Generator.ViewModels {
 		/// 保存コマンド
 		/// </summary>
 		public ReactiveCommand SaveToChapterCommand { get; } = new ReactiveCommand();
-
-		#endregion
-
-		#region EquipablePlace
-
-		/// <summary>
-		/// 保存コマンド
-		/// </summary>
-		public ReactiveCommand SaveToEquipablePlaceCommand { get; } = new ReactiveCommand();
-
-		/// <summary>
-		/// 装備可能箇所一覧
-		/// </summary>
-		public List<EquipablePlace> EquipablePlaces { set; get; } = new List<EquipablePlace>();
 
 		#endregion
 
@@ -283,21 +800,7 @@ namespace Generator.ViewModels {
 		public ReactiveCommand SaveToParameterChipCommand { get; } = new ReactiveCommand();
 
 		#endregion
-
-		#region Parameter
-
-		/// <summary>
-		/// 保存コマンド
-		/// </summary>
-		public ReactiveCommand SaveToParameterCommand { get; } = new ReactiveCommand();
-
-		/// <summary>
-		/// 装備可能箇所一覧
-		/// </summary>
-		public List<Parameter> Parameters { set; get; } = new List<Parameter>();
-
-		#endregion
-
+		
 		#region Save
 
 		/// <summary>
@@ -441,85 +944,7 @@ namespace Generator.ViewModels {
 
 		#endregion
 
-		#region InitialSetting
-
-		/// <summary>
-		/// フォルダパス
-		/// </summary>
-		private string folderPath = "test";
-		/// <summary>
-		/// /フォルダパス
-		/// </summary>
-		public string FolderPath {
-			set => this.SetProperty( ref this.folderPath , value );
-			get => this.folderPath;
-		}
-
-		/// <summary>
-		/// 保存コマンド
-		/// </summary>
-		public ReactiveCommand SaveToInitialSettingCommand { get; } = new ReactiveCommand();
-
-		/// <summary>
-		/// フォルダ選択コマンド
-		/// </summary>
-		public ReactiveCommand SelectFolderCommand { get; } = new ReactiveCommand();
-
-		#endregion
-
-		/// <summary>
-		/// コンストラクタ
-		/// </summary>
-		/// <param name="navigationService">NavigationService</param>
-		public MainPageViewModel( NavigationService navigationService ) {
-			this.Log( "コンストラクタ" );
-
-			#region 共通部
-
-			this.navigationService = navigationService;
-			this.Log( $"Navigation Service取得できた？:{this.navigationService != null}" );
-
-			this.BackToMainPage
-				.Subscribe( _ => this.Transition( PageName.MainPage ) )
-				.AddTo( this.Disposable );
-
-			#endregion
-
-			#region MainPage
-
-			this.TransitionToBodyCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingBody ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToChapterCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingChapter ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToEquipablePlaceCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingEquipablePlace ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToEquipmentCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingEquipment ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToParameterChipCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingParameterChip ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToParameterCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingParameter ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToSaveCreating
-				.Subscribe( _ => this.Transition( PageName.CreatingSave ) )
-				.AddTo( this.Disposable );
-
-			this.TransitionToInitialSetting
-				.Subscribe( _ => this.Transition( PageName.InitialSetting ) )
-				.AddTo( this.Disposable );
-
-			#endregion
+		void InitialTemp() {
 
 			EquipablePlaceRepository.GetInstance().Rows.ForEach( row => {
 				this.EquipablePlacesOfBody.Add( new HavingData() {
@@ -564,11 +989,7 @@ namespace Generator.ViewModels {
 					Num = row.Id
 				} );
 			} );
-
-			this.EquipablePlaces = EquipablePlaceRepository.GetInstance().Rows;
-
-			this.Parameters = ParameterRepository.GetInstance().Rows;
-
+			
 			#region Body
 
 			this.SaveToBodyCommand
@@ -581,14 +1002,6 @@ namespace Generator.ViewModels {
 
 			this.SaveToChapterCommand
 				.Subscribe( _ => this.SaveToChapter() )
-				.AddTo( this.Disposable );
-
-			#endregion
-
-			#region EquipablePlace
-
-			this.SaveToEquipablePlaceCommand
-				.Subscribe( _ => this.SaveToEquipablePlace() )
 				.AddTo( this.Disposable );
 
 			#endregion
@@ -608,15 +1021,7 @@ namespace Generator.ViewModels {
 				.AddTo( this.Disposable );
 
 			#endregion
-
-			#region Parameter
-
-			this.SaveToParameterCommand
-				.Subscribe( _ => this.SaveToParameter() )
-				.AddTo( this.Disposable );
-
-			#endregion
-
+			
 			#region Save
 
 			this.SelectSave( 0 );
@@ -636,76 +1041,8 @@ namespace Generator.ViewModels {
 
 			#endregion
 
-			#region InitialSetting
-
-			this.FolderPath = this.GetDataFolderPath();
-
-			this.SaveToInitialSettingCommand
-				.Subscribe( _ => this.SaveToInitialSetting() )
-				.AddTo( this.Disposable );
-
-			this.SelectFolderCommand
-				.Subscribe( _ => this.SelectFolder() )
-				.AddTo( this.Disposable );
-
-			#endregion
-
 		}
-
-		#region 共通部
-
-		/// <summary>
-		/// 削除
-		/// </summary>
-		public void Dispose() {
-			this.Log( "削除" );
-			this.Disposable.Dispose();
-		}
-
-		/// <summary>
-		/// 画面遷移
-		/// </summary>
-		/// <param name="pageName">遷移先画面名</param>
-		private void Transition( PageName pageName ) {
-			Page page;
-			switch( pageName ) {
-				case PageName.CreatingBody:
-					page = new CreatingBodyPage();
-					break;
-				case PageName.CreatingChapter:
-					page = new CreatingChapterPage();
-					break;
-				case PageName.CreatingEquipablePlace:
-					page = new CreatingEquipablePlacePage();
-					break;
-				case PageName.CreatingEquipment:
-					page = new CreatingEquipmentPage();
-					break;
-				case PageName.CreatingParameterChip:
-					page = new CreatingParameterChipPage();
-					break;
-				case PageName.CreatingParameter:
-					page = new CreatingParameterPage();
-					break;
-				case PageName.CreatingSave:
-					page = new CreatingSavePage();
-					break;
-				case PageName.InitialSetting:
-					page = new InitialSettingPage();
-					break;
-				case PageName.MainPage:
-					page = new MainPage();
-					break;
-				default:
-					return;
-			}
-
-			this.navigationService?.Navigate( page );
-
-		}
-
-		#endregion
-
+		
 		#region Body
 
 		/// <summary>
@@ -738,24 +1075,6 @@ namespace Generator.ViewModels {
 		/// </summary>
 		/// <param name="id">チャプターID</param>
 		public void DeleteChapter( int id ) => this.Log( "未実装" );
-
-		#endregion
-
-		#region EquipablePlace
-
-		/// <summary>
-		/// 装備可能箇所の保存
-		/// </summary>
-		private void SaveToEquipablePlace() => EquipablePlaceRepository.GetInstance().Write();
-
-		/// <summary>
-		/// 一覧削除
-		/// </summary>
-		/// <param name="id">装備可能箇所ID</param>
-		public void DeleteEquipablePlace( int id )
-			=> this.EquipablePlaces.Remove(
-				this.EquipablePlaces.FirstOrDefault( row => row.Id == id )
-			);
 
 		#endregion
 
@@ -800,24 +1119,6 @@ namespace Generator.ViewModels {
 		/// </summary>
 		/// <param name="id">パラメータチップID</param>
 		public void DeleteParameterChip( int id ) => this.Log( "未実装" );
-
-		#endregion
-
-		#region Parameter
-
-		/// <summary>
-		/// パラメータの保存
-		/// </summary>
-		private void SaveToParameter() => ParameterRepository.GetInstance().Write();
-
-		/// <summary>
-		/// 一覧削除
-		/// </summary>
-		/// <param name="id">パラメータID</param>
-		public void DeleteParameter( int id )
-			=> this.Parameters.Remove(
-				this.Parameters.FirstOrDefault( row => row.Id == id )
-			);
 
 		#endregion
 
@@ -1006,100 +1307,7 @@ namespace Generator.ViewModels {
 		public void DeleteSave( int id ) => this.Log( "未実装" );
 
 		#endregion
-
-		#region InitialSetting
-
-		/// <summary>
-		/// データフォルダのパス取得
-		/// </summary>
-		/// <returns>データフォルダのパス</returns>
-		private string GetDataFolderPath() {
-
-			// configのパスを取得
-			string appConfigPath;
-			{
-				Assembly assembly = Assembly.GetExecutingAssembly();
-				appConfigPath = Path.Combine(
-					Path.GetDirectoryName( assembly.Location ) ,
-					"Generator.exe.config"
-				);
-			}
-			this.Log( $"App.configのパス:{appConfigPath}" );
-
-			// XmlDocumentからDataフォルダのパスを取得
-			XmlDocument doc = new XmlDocument();
-			string dataFolderPath = null;
-			doc.Load( appConfigPath );
-			{
-				foreach( XmlNode node in doc[ "configuration" ][ "appSettings" ] ) {
-					if( node.Name == "add" ) {
-						if( node.Attributes.GetNamedItem( "key" ).Value == "DataFolderPath" ) {
-							dataFolderPath = node.Attributes.GetNamedItem( "value" ).Value;
-						}
-					}
-				}
-			}
-			this.Log( $"Dataフォルダのパス:{dataFolderPath}" );
-			return dataFolderPath;
-		}
-
-		/// <summary>
-		/// 初期設定の保存
-		/// </summary>
-		private void SaveToInitialSetting() {
-			this.Log( "初期設定保存" );
-
-			// configのパスを取得
-			string appConfigPath;
-			{
-				Assembly assembly = Assembly.GetExecutingAssembly();
-				appConfigPath = Path.Combine(
-					Path.GetDirectoryName( assembly.Location ) ,
-					"Generator.exe.config"
-				);
-			}
-			this.Log( $"App.configのパス:{appConfigPath}" );
-
-			// XmlDocumentに値を書き込む
-			XmlDocument doc = new XmlDocument();
-			doc.Load( appConfigPath );
-			{
-
-				XmlNode node = doc[ "configuration" ][ "appSettings" ];
-
-				// addノードを新規に追加
-				{
-					XmlElement addNode = doc.CreateElement( "add" );
-					addNode.SetAttribute( "key" , "DataFolderPath" );
-					addNode.SetAttribute( "value" , this.FolderPath );
-					node.AppendChild( addNode );
-				}
-
-			}
-			doc.Save( appConfigPath );
-
-			this.Log( "保存成功！" );
-		}
-
-		/// <summary>
-		/// フォルダ選択
-		/// </summary>
-		private void SelectFolder() {
-			FolderBrowserDialog dialog = new FolderBrowserDialog {
-				Description = "フォルダを選択してください"
-			};
-			if( dialog.ShowDialog() == DialogResult.OK ) {
-				this.Log( "ダイアログOK返ってきた" );
-				this.FolderPath = dialog.SelectedPath;
-				this.Log( $"フォルダパス:{this.FolderPath}" );
-			}
-			else {
-				this.Log( "ダイアログOK以外が返ってきた" );
-			}
-		}
-
-		#endregion
-
+		
 	}
 
 }

@@ -32,7 +32,7 @@ namespace Generator.Repositories {
 		/// パラメータ一覧
 		/// </summary>
 		public List<Parameter> Rows {
-			private set;
+			set;
 			get;
 		}
 
