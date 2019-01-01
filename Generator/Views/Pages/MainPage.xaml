@@ -20,6 +20,7 @@
 			Grid.Row="0" 
 			Grid.Column="0"
 			Margin="5,5,5,5"
+			Background="DarkGray"
 			Command="{Binding TransitionToSaveCreating}">
 			<Button.Content>
 				<TextBlock 
@@ -30,6 +31,7 @@
 			Grid.Row="1"
 			Grid.Column="0"
 			Margin="5,5,5,5"
+			Background="DarkGray"
 			Command="{Binding TransitionToBodyCreating}">
 			<Button.Content>
 				<TextBlock 
@@ -40,6 +42,7 @@
 			Grid.Row="0"
 			Grid.Column="1"
 			Margin="5,5,5,5"
+			Background="DarkGray"
 			Command="{Binding TransitionToEquipmentCreating}">
 			<Button.Content>
 				<TextBlock 
@@ -50,6 +53,7 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			Margin="5,5,5,5"
+			Background="DarkGray"
 			Command="{Binding TransitionToParameterChipCreating}">
 			<Button.Content>
 				<TextBlock 
@@ -70,6 +74,7 @@
 			Grid.Row="1"
 			Grid.Column="2"
 			Margin="5,5,5,5"
+			Background="DarkGray"
 			Command="{Binding TransitionToChapterCreating}">
 			<Button.Content>
 				<TextBlock 
