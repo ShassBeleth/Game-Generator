@@ -32,7 +32,7 @@ namespace Generator.Repositories {
 		/// パラメータチップ一覧
 		/// </summary>
 		public List<ParameterChip> Rows {
-			private set;
+			set;
 			get;
 		}
 

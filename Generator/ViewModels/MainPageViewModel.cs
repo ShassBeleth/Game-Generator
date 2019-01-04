@@ -33,11 +33,9 @@ namespace Generator.ViewModels {
 			this.InitCommon( navigationService );
 			this.InitInitialSetting();
 			this.InitMainPage();
+			this.InitParameterChip();
 			this.InitParameter();
 			this.InitEquipment();
-
-
-
 
 			this.InitialTemp();
 			this.Log( "End" );
@@ -54,6 +52,33 @@ namespace Generator.ViewModels {
 		) {
 			field = value;
 			this.PropertyChanged?.Invoke( this , new PropertyChangedEventArgs( propertyName ) );
+		}
+
+		/// <summary>
+		/// 所持しているデータ
+		/// </summary>
+		public class HavingData {
+
+			/// <summary>
+			/// ID
+			/// </summary>
+			public int Id { set; get; }
+
+			/// <summary>
+			/// 所持しているかどうか
+			/// </summary>
+			public bool Having { set; get; }
+
+			/// <summary>
+			/// 名前
+			/// </summary>
+			public string Name { set; get; }
+
+			/// <summary>
+			/// 所持数
+			/// </summary>
+			public int Num { set; get; }
+
 		}
 
 		/// <summary>
@@ -237,6 +262,317 @@ namespace Generator.ViewModels {
 
 			this.Log( "End" );
 		}
+
+		#endregion
+
+		#region ParameterChip
+
+		/// <summary>
+		/// パラメータチップID
+		/// </summary>
+		private int parameterChipId = -1;
+		/// <summary>
+		/// パラメータチップID
+		/// </summary>
+		public int ParameterChipId {
+			set => this.SetProperty( ref this.parameterChipId , value );
+			get => this.parameterChipId;
+		}
+
+		/// <summary>
+		/// パラメータチップ名
+		/// </summary>
+		private string parameterChipName = "";
+		/// <summary>
+		/// パラメータチップ名
+		/// </summary>
+		public string ParameterChipName {
+			set => this.SetProperty( ref this.parameterChipName , value );
+			get => this.parameterChipName;
+		}
+
+		/// <summary>
+		/// パラメータチップの効果
+		/// </summary>
+		public List<HavingData> effectsOfParameterChips = new List<HavingData>();
+		/// <summary>
+		/// パラメータチップの効果
+		/// </summary>
+		public List<HavingData> EffectsOfParameterChips {
+			set => this.SetProperty( ref this.effectsOfParameterChips , value );
+			get => this.effectsOfParameterChips;
+		}
+
+		/// <summary>
+		/// パラメータの空きマス
+		/// </summary>
+		private bool[][] parameterSquares = new bool[][]{
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false }
+		};
+
+		/// <summary>
+		/// パラメータの空きマス
+		/// </summary>
+		public bool[][] ParameterSquares {
+			set => this.SetProperty( ref this.parameterSquares , value );
+			get => this.parameterSquares;
+		}
+
+		/// <summary>
+		/// パラメータチップ一覧
+		/// </summary>
+		public ObservableCollection<ParameterChip> ParameterChips { set; get; }
+		
+		/// <summary>
+		/// パラメータチップ更新コマンド
+		/// </summary>
+		public ReactiveCommand UpdateParameterChipCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// パラメータチップ編集コマンド
+		/// </summary>
+		public ReactiveCommand EditParameterChipCommand { get; } = new ReactiveCommand();
+
+		private int selectedParameterChipIndex;
+		public int SelectedParameterChipIndex {
+			set => this.SetProperty( ref this.selectedParameterChipIndex , value );
+			get => this.selectedParameterChipIndex;
+		}
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">パラメータチップID</param>
+		public void DeleteParameterChip( int id ) {
+			this.Log( "Start" );
+			this.Log( $"Id is {id}" );
+			this.ParameterChips.Remove( 
+				this.ParameterChips.FirstOrDefault( row => row.id == id ) 
+			);
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// パラメータチップ初期設定
+		/// </summary>
+		private void InitParameterChip() {
+			this.Log( "Start" );
+
+			this.ParameterChips = new ObservableCollection<ParameterChip>( ParameterChipRepository.GetInstance().Rows );
+
+			this.EffectsOfParameterChips = ParameterRepository.GetInstance().Rows
+				.Select( row => new HavingData() {
+					Id = row.Id ,
+					Having = false ,
+					Name = row.Name ,
+					Num = 0
+				} )
+				.ToList();
+
+			this.UpdateParameterChipCommand
+				.Subscribe( _ => this.UpdateParameterChip() )
+				.AddTo( this.Disposable );
+
+			this.EditParameterChipCommand
+				.Subscribe( _ => this.EditParameterChip() )
+				.AddTo( this.Disposable );
+
+			this.SaveToParameterChipCommand
+				.Subscribe( _ => this.SaveToParameterChip() )
+				.AddTo( this.Disposable );
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// パラメータチップの保存
+		/// </summary>
+		private void SaveToParameterChip() {
+			this.Log( "Start" );
+
+			ParameterChipRepository.GetInstance().Rows = this.ParameterChips
+				.Select( row => new ParameterChip() {
+					Id = row.id ,
+					Name = row.name
+				} )
+				.ToList();
+
+			ParameterChipRepository.GetInstance().Write();
+			ParameterChipEffectRepository.GetInstance().Write();
+			ParameterChipSquareRepository.GetInstance().Write();
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToParameterChipCommand { get; } = new ReactiveCommand();
+		
+		/// <summary>
+		/// パラメータチップ更新
+		/// </summary>
+		private void UpdateParameterChip() {
+			this.Log( "Start" );
+
+			if( this.ParameterChipId == -1 || "".Equals( this.ParameterChipName ) ) {
+				this.Log( "Parameter Chip Id or Name is Empty." );
+				return;
+			}
+
+			// パラメータチップの効果
+			{
+				List<ParameterChipEffect> parameterChipEffects = this.EffectsOfParameterChips
+				.Where( row => row.Having )
+				.Select( row => new ParameterChipEffect() {
+					ParameterChipId = this.ParameterChipId ,
+					ParameterId = row.Id ,
+					Num = row.Num
+				} )
+				.ToList();
+
+				ParameterChipEffectRepository.GetInstance().Rows.RemoveAll( row => row.ParameterChipId == this.ParameterChipId );
+				parameterChipEffects.ForEach( row =>
+					ParameterChipEffectRepository.GetInstance().Rows.Add( new ParameterChipEffect() {
+						ParameterChipId = this.ParameterChipId ,
+						ParameterId = row.ParameterId ,
+						Num = row.Num
+					} )
+				);
+
+				this.EffectsOfParameterChips = ParameterRepository.GetInstance().Rows
+					.Select( row => new HavingData() {
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+			}
+
+			// パラメータチップマス
+			{
+
+				ParameterChipSquareRepository.GetInstance().Rows.RemoveAll( row => row.ParameterChipId == this.ParameterChipId );
+				for( int y = 0 ; y < this.ParameterSquares.Length ; y++ ) {
+					for( int x = 0 ; x < this.ParameterSquares[y].Length ; x++ ) {
+						if( this.ParameterSquares[y][x] ) {
+							ParameterChipSquareRepository.GetInstance().Rows.Add( new ParameterChipSquare() {
+								ParameterChipId = this.ParameterChipId ,
+								X = x ,
+								Y = y
+							} );
+						}
+					}
+				}
+
+				this.ParameterSquares = new bool[][]{
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false }
+				};
+
+			}
+
+			// パラメータチップ
+			{
+				ParameterChip parameterChip = this.ParameterChips.FirstOrDefault( row => row.id == this.ParameterChipId );
+
+				bool isAdded = parameterChip is null;
+				this.Log( $"Added is {isAdded}" );
+				if( isAdded ) {
+					this.ParameterChips.Add( new ParameterChip() {
+						Id = this.ParameterChipId ,
+						Name = this.ParameterChipName
+					} );
+				}
+				else {
+					this.ParameterChips[ this.ParameterChips.IndexOf( parameterChip ) ] = new ParameterChip() {
+						Id = this.ParameterChipId ,
+						Name = this.ParameterChipName
+					};
+				}
+
+				this.ParameterChipId = -1;
+				this.ParameterChipName = "";
+
+			}
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// パラメータチップ編集
+		/// </summary>
+		private void EditParameterChip() {
+			this.Log( "Start" );
+
+			int id = this.ParameterChips[ this.SelectedParameterChipIndex ].Id;
+
+			// パラメータチップの効果
+			{
+				IEnumerable<ParameterChipEffect> effects = ParameterChipEffectRepository.GetInstance().Rows
+					.Where( row => row.ParameterChipId == id );
+				if( !( effects is null ) ) {
+					this.EffectsOfParameterChips = ParameterRepository.GetInstance().Rows
+						.Select( row => new HavingData() {
+							Id = row.id ,
+							Name = row.name ,
+							Having = effects.Any( ef => ef.ParameterId == row.id ) ,
+							Num = effects?.FirstOrDefault( ef => ef.ParameterId == row.id )?.Num ?? 0
+						} )
+						.ToList();
+				}
+			}
+
+			// パラメータチップマス
+			{
+				bool[][] squares = new bool[][]{
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false }
+				};
+				IEnumerable<ParameterChipSquare> data = ParameterChipSquareRepository.GetInstance().Rows
+					.Where( row => row.ParameterChipId == id );
+				data.ToList().ForEach( row => {
+					squares[ row.Y ][ row.X ] = true;
+				} );
+				this.ParameterSquares = squares;
+			}
+
+			// パラメータチップ
+			{
+				this.ParameterChipId = id;
+				this.ParameterChipName = this.ParameterChips[ this.SelectedParameterChipIndex ].Name;
+			}
+			
+			this.Log( "End" );
+		}
+
+		private List<ParameterChipSquare> temp;
 
 		#endregion
 
@@ -603,76 +939,13 @@ namespace Generator.ViewModels {
 
 
 
+		
 
 
+		
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		/// <summary>
-		/// 所持しているデータ
-		/// </summary>
-		public class HavingData {
-
-			/// <summary>
-			/// ID
-			/// </summary>
-			public int Id { set; get; }
-
-			/// <summary>
-			/// 所持しているかどうか
-			/// </summary>
-			public bool Having { set; get; }
-
-			/// <summary>
-			/// 名前
-			/// </summary>
-			public string Name { set; get; }
-
-			/// <summary>
-			/// 所持数
-			/// </summary>
-			public int Num { set; get; }
-
-		}
+		
 		
 		#region Body
 
@@ -776,28 +1049,6 @@ namespace Generator.ViewModels {
 		/// 保存コマンド
 		/// </summary>
 		public ReactiveCommand SaveToEquipmentCommand { get; } = new ReactiveCommand();
-
-		#endregion
-
-		#region ParameterChip
-
-		/// <summary>
-		/// パラメータチップの効果
-		/// </summary>
-		private List<HavingData> effectsOfParameterChips = new List<HavingData>();
-
-		/// <summary>
-		/// パラメータチップの効果
-		/// </summary>
-		public List<HavingData> EffectsOfParameterChips {
-			set => this.SetProperty( ref this.effectsOfParameterChips , value );
-			get => this.effectsOfParameterChips;
-		}
-
-		/// <summary>
-		/// 保存コマンド
-		/// </summary>
-		public ReactiveCommand SaveToParameterChipCommand { get; } = new ReactiveCommand();
 
 		#endregion
 		
@@ -982,12 +1233,6 @@ namespace Generator.ViewModels {
 					Name = row.Name ,
 					Num = row.Id
 				} );
-				this.EffectsOfParameterChips.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name ,
-					Num = row.Id
-				} );
 			} );
 			
 			#region Body
@@ -1010,14 +1255,6 @@ namespace Generator.ViewModels {
 
 			this.SaveToEquipmentCommand
 				.Subscribe( _ => this.SaveToEquipment() )
-				.AddTo( this.Disposable );
-
-			#endregion
-
-			#region ParameterChip
-
-			this.SaveToParameterChipCommand
-				.Subscribe( _ => this.SaveToParameterChip() )
 				.AddTo( this.Disposable );
 
 			#endregion
@@ -1100,28 +1337,7 @@ namespace Generator.ViewModels {
 		public void DeleteEquipment( int id ) => this.Log( "未実装" );
 
 		#endregion
-
-		#region ParameterChip
-
-		/// <summary>
-		/// パラメータチップの保存
-		/// </summary>
-		private void SaveToParameterChip() {
-
-			ParameterChipRepository.GetInstance().Write();
-			ParameterChipEffectRepository.GetInstance().Write();
-			ParameterChipSquareRepository.GetInstance().Write();
-
-		}
-
-		/// <summary>
-		/// 一覧削除
-		/// </summary>
-		/// <param name="id">パラメータチップID</param>
-		public void DeleteParameterChip( int id ) => this.Log( "未実装" );
-
-		#endregion
-
+		
 		#region Save
 
 		/// <summary>
