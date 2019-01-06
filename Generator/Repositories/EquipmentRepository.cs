@@ -32,7 +32,7 @@ namespace Generator.Repositories {
 		/// 素体一覧
 		/// </summary>
 		public List<Equipment> Rows {
-			private set;
+			set;
 			get;
 		}
 

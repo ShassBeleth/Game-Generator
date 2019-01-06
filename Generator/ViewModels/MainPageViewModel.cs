@@ -35,6 +35,7 @@ namespace Generator.ViewModels {
 			this.InitMainPage();
 			this.InitParameterChip();
 			this.InitParameter();
+			this.InitEquipmentPlace();
 			this.InitEquipment();
 
 			this.InitialTemp();
@@ -265,6 +266,564 @@ namespace Generator.ViewModels {
 
 		#endregion
 
+		#region Equipment
+
+		/// <summary>
+		/// 装備ID
+		/// </summary>
+		private int equipmentId = -1;
+		/// <summary>
+		/// 装備ID
+		/// </summary>
+		public int EquipmentId {
+			set => this.SetProperty( ref this.equipmentId , value );
+			get => this.equipmentId;
+		}
+		
+		/// <summary>
+		/// 装備名
+		/// </summary>
+		private string equipmentName = "";
+		/// <summary>
+		/// 装備名
+		/// </summary>
+		public string EquipmentName {
+			set => this.SetProperty( ref this.equipmentName , value );
+			get => this.equipmentName;
+		}
+		
+		/// <summary>
+		/// 装備ルビ
+		/// </summary>
+		private string equipmentRuby = "";
+		/// <summary>
+		/// 装備ルビ
+		/// </summary>
+		public string EquipmentRuby {
+			set => this.SetProperty( ref this.equipmentRuby , value );
+			get => this.equipmentRuby;
+		}
+		
+		/// <summary>
+		/// 装備フレーバーテキスト
+		/// </summary>
+		private string equipmentFlavor = "";
+		/// <summary>
+		/// 装備フレーバーテキスト
+		/// </summary>
+		public string EquipmentFlavor {
+			set => this.SetProperty( ref this.equipmentFlavor , value );
+			get => this.equipmentFlavor;
+		}
+
+		/// <summary>
+		/// 装備できる装備可能箇所
+		/// </summary>
+		private List<HavingData> equipmentsEquipableInEquipablePalces = new List<HavingData>();
+
+		/// <summary>
+		/// 装備できる装備可能箇所
+		/// </summary>
+		public List<HavingData> EquipmentsEquipableInEquipablePalces {
+			set => this.SetProperty( ref this.equipmentsEquipableInEquipablePalces , value );
+			get => this.equipmentsEquipableInEquipablePalces;
+		}
+
+		/// <summary>
+		/// 装備すると増える装備可能箇所
+		/// </summary>
+		private List<HavingData> equippedWhenIncreasingEquipablePlaces = new List<HavingData>();
+
+		/// <summary>
+		/// 装備すると増える装備可能箇所
+		/// </summary>
+		public List<HavingData> EquippedWhenIncreasingEquipablePlaces {
+			set => this.SetProperty( ref this.equippedWhenIncreasingEquipablePlaces , value );
+			get => this.equippedWhenIncreasingEquipablePlaces;
+		}
+
+		/// <summary>
+		/// 装備すると装備できなくなる装備可能箇所
+		/// </summary>
+		private List<HavingData> equippedWhenUnequippingEquipablePlaces = new List<HavingData>();
+
+		/// <summary>
+		/// 装備すると装備できなくなる装備可能箇所
+		/// </summary>
+		public List<HavingData> EquippedWhenUnequippingEquipablePlaces {
+			set => this.SetProperty( ref this.equippedWhenUnequippingEquipablePlaces , value );
+			get => this.equippedWhenUnequippingEquipablePlaces;
+		}
+
+		/// <summary>
+		/// 装備の効果
+		/// </summary>
+		private List<HavingData> effectsOfEquipment = new List<HavingData>();
+
+		/// <summary>
+		/// 装備の効果
+		/// </summary>
+		public List<HavingData> EffectsOfEquipment {
+			set => this.SetProperty( ref this.effectsOfEquipment , value );
+			get => this.effectsOfEquipment;
+		}
+
+		/// <summary>
+		/// 装備の空きマス
+		/// </summary>
+		private bool[][] equipmentSquares = new bool[][]{
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false }
+		};
+
+		/// <summary>
+		/// 装備の空きマス
+		/// </summary>
+		public bool[][] EquipmentSquares {
+			set => this.SetProperty( ref this.equipmentSquares , value );
+			get => this.equipmentSquares;
+		}
+
+		/// <summary>
+		/// 装備一覧
+		/// </summary>
+		public ObservableCollection<Equipment> Equipments { set; get; }
+
+		/// <summary>
+		/// 選択中の装備の要素番号
+		/// </summary>
+		private int selectedEquipmentIndex;
+		/// <summary>
+		/// 選択中の装備の要素番号
+		/// </summary>
+		public int SelectedEquipmentIndex {
+			set => this.SetProperty( ref this.selectedEquipmentIndex , value );
+			get => this.selectedEquipmentIndex;
+		}
+		
+		/// <summary>
+		/// 装備更新コマンド
+		/// </summary>
+		public ReactiveCommand UpdateEquipmentCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 装備編集コマンド
+		/// </summary>
+		public ReactiveCommand EditEquipmentCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToEquipmentCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">装備ID</param>
+		public void DeleteEquipment( int id ) { 
+			this.Log( "Start" );
+			this.Log( $"Id is {id}" );
+			this.Equipments.Remove(
+				this.Equipments.FirstOrDefault( row => row.id == id ) 
+			);
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備初期設定
+		/// </summary>
+		private void InitEquipment() {
+			this.Log( "Start" );
+
+			this.Equipments = new ObservableCollection<Equipment>( EquipmentRepository.GetInstance().Rows );
+
+			this.EquipmentsEquipableInEquipablePalces = EquipablePlaceRepository.GetInstance().Rows
+				.Select( row => new HavingData() {
+					Id = row.Id ,
+					Having = false ,
+					Name = row.Name
+				} )
+				.ToList();
+
+			this.EquippedWhenIncreasingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
+				.Select( row => new HavingData() {
+					Id = row.Id ,
+					Having = false ,
+					Name = row.Name
+				} )
+				.ToList();
+
+			this.EquippedWhenUnequippingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
+				.Select( row => new HavingData() {
+					Id = row.Id ,
+					Having = false ,
+					Name = row.Name
+				} )
+				.ToList();
+
+			this.EffectsOfEquipment = ParameterRepository.GetInstance().Rows
+				.Select( row => new HavingData() {
+					Id = row.Id ,
+					Having = false ,
+					Name = row.Name
+				} )
+				.ToList();
+
+			this.UpdateEquipmentCommand
+				.Subscribe( _ => this.UpdateEquipment() )
+				.AddTo( this.Disposable );
+
+			this.EditEquipmentCommand
+				.Subscribe( _ => this.EditEquipment() )
+				.AddTo( this.Disposable );
+
+			this.SaveToEquipmentCommand
+				.Subscribe( _ => this.SaveToEquipment() )
+				.AddTo( this.Disposable );
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備の保存
+		/// </summary>
+		private void SaveToEquipment() {
+			this.Log( "Start" );
+
+			EquipmentRepository.GetInstance().Rows = this.Equipments
+				.Select( row => new Equipment() {
+					Id = row.id ,
+					Name = row.name ,
+					Ruby = row.Ruby ,
+					Flavor = row.Flavor ,
+					DisplayOrder = row.id
+				} )
+				.ToList();
+
+			EquipmentRepository.GetInstance().Write();
+			EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Write();
+			EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Write();
+			EquipmentEquipableInEquipablePlaceRepository.GetInstance().Write();
+			EquipmentEffectRepository.GetInstance().Write();
+			DesignatedPlaceToEquipmentByEffectRepository.GetInstance().Write();
+			EquipmentFreeSquareRepository.GetInstance().Write();
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備更新
+		/// </summary>
+		private void UpdateEquipment() {
+			this.Log( "Start" );
+
+			if( 
+				this.EquipmentId == -1 || 
+				"".Equals( this.EquipmentName ) ||
+				"".Equals( this.EquipmentRuby ) ||
+				"".Equals( this.EquipmentFlavor ) 
+			) {
+				this.Log( "Equipment Id , Name , Ruby or Flavor is Empty." );
+				return;
+			}
+
+			// 装備すると増える装備可能箇所
+			{
+				List<EquippedWhenIncreasingEquipablePlace> equippedWhenIncreasingEquipablePlaces = this.EquippedWhenIncreasingEquipablePlaces
+					.Where( row => row.Having )
+					.Select( row => new EquippedWhenIncreasingEquipablePlace() {
+						EquipmentId = this.EquipmentId ,
+						EquipablePlaceId = row.Id
+					} )
+					.ToList();
+
+				EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
+				equippedWhenIncreasingEquipablePlaces.ForEach( row =>
+					EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows.Add( new EquippedWhenIncreasingEquipablePlace() {
+						EquipmentId = this.EquipmentId ,
+						EquipablePlaceId = row.EquipablePlaceId
+					} )
+				);
+
+				this.EquippedWhenIncreasingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
+					.Select( row => new HavingData() {
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+			}
+			
+			// 装備すると装備できなくなる装備可能箇所
+			{
+				List<EquippedWhenUnequippingEquipablePlace> equippedWhenUnequippingEquipablePlaces = this.EquippedWhenUnequippingEquipablePlaces
+					.Where( row => row.Having )
+					.Select( row => new EquippedWhenUnequippingEquipablePlace() {
+						EquipmentId = this.EquipmentId ,
+						EquipablePlaceId = row.Id
+					} )
+					.ToList();
+
+				EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
+				equippedWhenUnequippingEquipablePlaces.ForEach( row =>
+					EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Rows.Add( new EquippedWhenUnequippingEquipablePlace() {
+						EquipmentId = this.EquipmentId ,
+						EquipablePlaceId = row.EquipablePlaceId
+					} )
+				);
+
+				this.EquippedWhenUnequippingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
+					.Select( row => new HavingData() {
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+			}
+
+			// 装備可能箇所に装備できる装備
+			{
+				List<EquipmentEquipableInEquipablePlace> equipmentsEquipableInEquipablePalces = this.EquipmentsEquipableInEquipablePalces
+					.Where( row => row.Having )
+					.Select( row => new EquipmentEquipableInEquipablePlace() {
+						EquipmentId = this.EquipmentId ,
+						EquipablePlaceId = row.Id
+					} )
+					.ToList();
+
+				EquipmentEquipableInEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
+				equipmentsEquipableInEquipablePalces.ForEach( row =>
+					EquipmentEquipableInEquipablePlaceRepository.GetInstance().Rows.Add( new EquipmentEquipableInEquipablePlace() {
+						EquipmentId = this.EquipmentId ,
+						EquipablePlaceId = row.EquipablePlaceId
+					} )
+				);
+
+				this.EquipmentsEquipableInEquipablePalces = EquipablePlaceRepository.GetInstance().Rows
+					.Select( row => new HavingData() {
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+
+			}
+
+			// 装備の効果
+			{
+				List<EquipmentEffect> equipmentEffects = this.EffectsOfEquipment
+					.Where( row => row.Having )
+					.Select( row => new EquipmentEffect() {
+						EquipmentId = this.EquipmentId ,
+						ParameterId = row.Id ,
+						Num = row.Num
+					} )
+					.ToList();
+
+				EquipmentEffectRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
+				equipmentEffects.ForEach( row =>
+					EquipmentEffectRepository.GetInstance().Rows.Add( new EquipmentEffect() {
+						EquipmentId = this.EquipmentId ,
+						ParameterId = row.ParameterId ,
+						Num = row.Num
+					} )
+				);
+
+				this.EffectsOfEquipment = ParameterRepository.GetInstance().Rows
+					.Select( row => new HavingData() {
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+			}
+
+			// 装備することで増える空きマス
+			{
+				EquipmentFreeSquareRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
+				for( int y = 0 ; y < this.EquipmentSquares.Length ; y++ ) {
+					for( int x = 0 ; x < this.EquipmentSquares[ y ].Length ; x++ ) {
+						if( this.EquipmentSquares[ y ][ x ] ) {
+							EquipmentFreeSquareRepository.GetInstance().Rows.Add( new EquipmentFreeSquare() {
+								EquipmentId = this.EquipmentId ,
+								X = x ,
+								Y = y
+							} );
+						}
+					}
+				}
+
+				this.EquipmentSquares = new bool[][]{
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false }
+				};
+
+			}
+
+			// 装備
+			{
+				Equipment equipment = this.Equipments.FirstOrDefault( row => row.id == this.EquipmentId );
+
+				bool isAdded = equipment is null;
+				this.Log( $"Added is {isAdded}" );
+				if( isAdded ) {
+					this.Equipments.Add( new Equipment() {
+						Id = this.EquipmentId ,
+						Name = this.EquipmentName ,
+						Ruby = this.EquipmentRuby ,
+						Flavor = this.EquipmentFlavor
+					} );
+				}
+				else {
+					this.Equipments[ this.Equipments.IndexOf( equipment ) ] = new Equipment() {
+						Id = this.EquipmentId ,
+						Name = this.EquipmentName ,
+						Ruby = this.EquipmentRuby ,
+						Flavor = this.EquipmentFlavor
+					};
+				}
+
+				this.EquipmentId = -1;
+				this.EquipmentName = "";
+				this.EquipmentRuby = "";
+				this.EquipmentFlavor = "";
+
+			}
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備編集
+		/// </summary>
+		private void EditEquipment() {
+			this.Log( "Start" );
+
+			int id = this.Equipments[ this.SelectedEquipmentIndex ].Id;
+			
+			// 装備すると増える装備可能箇所
+			{
+				IEnumerable<EquippedWhenIncreasingEquipablePlace> equipablePlaces = EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows
+					.Where( row => row.EquipmentId == id );
+
+				if( !( equipablePlaces is null ) ) {
+					this.EquippedWhenIncreasingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
+						.Select( row => new HavingData() {
+							Id = row.id ,
+							Name = row.name ,
+							Having = equipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
+						} )
+						.ToList();
+				}
+			}
+
+			// 装備すると装備できなくなる装備可能箇所
+			{
+				IEnumerable<EquippedWhenUnequippingEquipablePlace> equipablePlaces = EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Rows
+					.Where( row => row.EquipmentId == id );
+
+				if( !( equipablePlaces is null ) ) {
+					this.EquippedWhenUnequippingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
+						.Select( row => new HavingData() {
+							Id = row.id ,
+							Name = row.name ,
+							Having = equipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
+						} )
+						.ToList();
+				}
+			}
+
+			// 装備可能箇所に装備できる装備
+			{
+				IEnumerable<EquipmentEquipableInEquipablePlace> equipablePlaces = EquipmentEquipableInEquipablePlaceRepository.GetInstance().Rows
+					.Where( row => row.EquipmentId == id );
+
+				if( !( equipablePlaces is null ) ) {
+					this.EquipmentsEquipableInEquipablePalces = EquipablePlaceRepository.GetInstance().Rows
+						.Select( row => new HavingData() {
+							Id = row.id ,
+							Name = row.name ,
+							Having = equipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
+						} )
+						.ToList();
+				}
+			}
+
+			// 装備の効果
+			{
+
+				IEnumerable<EquipmentEffect> effects = EquipmentEffectRepository.GetInstance().Rows
+					.Where( row => row.EquipmentId == id );
+
+				if( !( effects is null ) ) {
+					this.EffectsOfEquipment = ParameterRepository.GetInstance().Rows
+						.Select( row => new HavingData() {
+							Id = row.id ,
+							Name = row.name ,
+							Having = effects.Any( ef => ef.ParameterId == row.id ) ,
+							Num = effects?.FirstOrDefault( ef => ef.ParameterId == row.id )?.Num ?? 0
+						} )
+						.ToList();
+				}
+
+			}
+
+			// 装備することで増える空きマス
+			{
+				bool[][] squares = new bool[][]{
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false }
+				};
+				IEnumerable<EquipmentFreeSquare> data = EquipmentFreeSquareRepository.GetInstance().Rows
+					.Where( row => row.EquipmentId == id );
+				data.ToList().ForEach( row => {
+					squares[ row.Y ][ row.X ] = true;
+				} );
+				this.EquipmentSquares = squares;
+
+			}
+			
+			// 装備
+			{
+				this.EquipmentId = id;
+				this.EquipmentName = this.Equipments[ this.SelectedEquipmentIndex ].Name;
+				this.EquipmentRuby = this.Equipments[ this.SelectedEquipmentIndex ].Ruby;
+				this.EquipmentFlavor = this.Equipments[ this.SelectedEquipmentIndex ].Flavor;
+			}
+
+			this.Log( "End" );
+		}
+		
+		#endregion
+
 		#region ParameterChip
 
 		/// <summary>
@@ -342,7 +901,13 @@ namespace Generator.ViewModels {
 		/// </summary>
 		public ReactiveCommand EditParameterChipCommand { get; } = new ReactiveCommand();
 
+		/// <summary>
+		/// 選択中のパラメータチップの要素番号
+		/// </summary>
 		private int selectedParameterChipIndex;
+		/// <summary>
+		/// 選択中のパラメータチップの要素番号
+		/// </summary>
 		public int SelectedParameterChipIndex {
 			set => this.SetProperty( ref this.selectedParameterChipIndex , value );
 			get => this.selectedParameterChipIndex;
@@ -571,9 +1136,7 @@ namespace Generator.ViewModels {
 			
 			this.Log( "End" );
 		}
-
-		private List<ParameterChipSquare> temp;
-
+		
 		#endregion
 
 		#region Parameter
@@ -779,7 +1342,7 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備可能箇所初期設定
 		/// </summary>
-		private void InitEquipment() {
+		private void InitEquipmentPlace() {
 			this.Log( "Start" );
 
 			this.EquipablePlaces = new ObservableCollection<EquipablePlace>( EquipablePlaceRepository.GetInstance().Rows );
@@ -990,68 +1553,7 @@ namespace Generator.ViewModels {
 		public ReactiveCommand SaveToChapterCommand { get; } = new ReactiveCommand();
 
 		#endregion
-
-		#region Equipment
-
-		/// <summary>
-		/// 装備できる装備可能箇所
-		/// </summary>
-		private List<HavingData> equipmentsEquipableInEquipablePalces = new List<HavingData>();
-
-		/// <summary>
-		/// 装備できる装備可能箇所
-		/// </summary>
-		public List<HavingData> EquipmentsEquipableInEquipablePalces {
-			set => this.SetProperty( ref this.equipmentsEquipableInEquipablePalces , value );
-			get => this.equipmentsEquipableInEquipablePalces;
-		}
-
-		/// <summary>
-		/// 装備すると増える装備可能箇所
-		/// </summary>
-		private List<HavingData> equippedWhenIncreasingEquipablePlaces = new List<HavingData>();
-
-		/// <summary>
-		/// 装備すると増える装備可能箇所
-		/// </summary>
-		public List<HavingData> EquippedWhenIncreasingEquipablePlaces {
-			set => this.SetProperty( ref this.equippedWhenIncreasingEquipablePlaces , value );
-			get => this.equippedWhenIncreasingEquipablePlaces;
-		}
-
-		/// <summary>
-		/// 装備すると装備できなくなる装備可能箇所
-		/// </summary>
-		private List<HavingData> equippedWhenUnequippingEquipablePlaces = new List<HavingData>();
-
-		/// <summary>
-		/// 装備すると装備できなくなる装備可能箇所
-		/// </summary>
-		public List<HavingData> EquippedWhenUnequippingEquipablePlaces {
-			set => this.SetProperty( ref this.equippedWhenUnequippingEquipablePlaces , value );
-			get => this.equippedWhenUnequippingEquipablePlaces;
-		}
-
-		/// <summary>
-		/// 装備の効果
-		/// </summary>
-		private List<HavingData> effectsOfEquipment = new List<HavingData>();
-
-		/// <summary>
-		/// 装備の効果
-		/// </summary>
-		public List<HavingData> EffectsOfEquipment {
-			set => this.SetProperty( ref this.effectsOfEquipment , value );
-			get => this.effectsOfEquipment;
-		}
-
-		/// <summary>
-		/// 保存コマンド
-		/// </summary>
-		public ReactiveCommand SaveToEquipmentCommand { get; } = new ReactiveCommand();
-
-		#endregion
-		
+				
 		#region Save
 
 		/// <summary>
@@ -1203,21 +1705,6 @@ namespace Generator.ViewModels {
 					Id = row.Id ,
 					Name = row.Name
 				} );
-				this.EquipmentsEquipableInEquipablePalces.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name
-				} );
-				this.EquippedWhenIncreasingEquipablePlaces.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name
-				} );
-				this.EquippedWhenUnequippingEquipablePlaces.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name
-				} );
 			} );
 
 			ParameterRepository.GetInstance().Rows.ForEach( row => {
@@ -1226,12 +1713,6 @@ namespace Generator.ViewModels {
 					Name = row.Name ,
 					Having = false ,
 					Num = 0
-				} );
-				this.EffectsOfEquipment.Add( new HavingData() {
-					Id = row.Id ,
-					Having = row.Id % 2 == 0 ,
-					Name = row.Name ,
-					Num = row.Id
 				} );
 			} );
 			
@@ -1247,14 +1728,6 @@ namespace Generator.ViewModels {
 
 			this.SaveToChapterCommand
 				.Subscribe( _ => this.SaveToChapter() )
-				.AddTo( this.Disposable );
-
-			#endregion
-
-			#region Equipment
-
-			this.SaveToEquipmentCommand
-				.Subscribe( _ => this.SaveToEquipment() )
 				.AddTo( this.Disposable );
 
 			#endregion
@@ -1312,29 +1785,6 @@ namespace Generator.ViewModels {
 		/// </summary>
 		/// <param name="id">チャプターID</param>
 		public void DeleteChapter( int id ) => this.Log( "未実装" );
-
-		#endregion
-
-		#region Equipment
-
-		/// <summary>
-		/// 装備の保存
-		/// </summary>
-		private void SaveToEquipment() {
-			EquipmentRepository.GetInstance().Write();
-			EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Write();
-			EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Write();
-			EquipmentEquipableInEquipablePlaceRepository.GetInstance().Write();
-			EquipmentEffectRepository.GetInstance().Write();
-			DesignatedPlaceToEquipmentByEffectRepository.GetInstance().Write();
-			EquipmentFreeSquareRepository.GetInstance().Write();
-		}
-
-		/// <summary>
-		/// 一覧削除
-		/// </summary>
-		/// <param name="id">装備ID</param>
-		public void DeleteEquipment( int id ) => this.Log( "未実装" );
 
 		#endregion
 		
