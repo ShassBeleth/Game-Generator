@@ -28,7 +28,8 @@ namespace Generator.ViewModels {
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="navigationService">NavigationService</param>
-		public MainPageViewModel( NavigationService navigationService ) {
+		public MainPageViewModel( NavigationService navigationService )
+		{
 			this.Log( "Start" );
 			this.InitCommon( navigationService );
 			this.InitInitialSetting();
@@ -37,6 +38,7 @@ namespace Generator.ViewModels {
 			this.InitParameter();
 			this.InitEquipmentPlace();
 			this.InitEquipment();
+			this.InitBody();
 
 			this.InitialTemp();
 			this.Log( "End" );
@@ -50,7 +52,8 @@ namespace Generator.ViewModels {
 			ref T field ,
 			T value ,
 			[CallerMemberName]string propertyName = null
-		) {
+		)
+		{
 			field = value;
 			this.PropertyChanged?.Invoke( this , new PropertyChangedEventArgs( propertyName ) );
 		}
@@ -89,7 +92,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 削除
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			this.Log( "Start" );
 			this.Disposable.Dispose();
 			this.Log( "End" );
@@ -113,7 +117,8 @@ namespace Generator.ViewModels {
 		/// 画面遷移
 		/// </summary>
 		/// <param name="pageName">遷移先画面名</param>
-		private void Transition( PageName pageName ) {
+		private void Transition( PageName pageName )
+		{
 			this.Log( "Start" );
 			Page page;
 			switch( pageName ) {
@@ -167,7 +172,8 @@ namespace Generator.ViewModels {
 		/// 共通部初期設定
 		/// </summary>
 		/// <param name="navigationService">NavigationService</param>
-		private void InitCommon( NavigationService navigationService ) {
+		private void InitCommon( NavigationService navigationService )
+		{
 			this.Log( "Start" );
 
 			this.navigationService = navigationService;
@@ -226,7 +232,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 初期設定
 		/// </summary>
-		private void InitMainPage() {
+		private void InitMainPage()
+		{
 			this.Log( "Start" );
 
 			this.TransitionToBodyCreating
@@ -279,7 +286,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.equipmentId , value );
 			get => this.equipmentId;
 		}
-		
+
 		/// <summary>
 		/// 装備名
 		/// </summary>
@@ -291,7 +298,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.equipmentName , value );
 			get => this.equipmentName;
 		}
-		
+
 		/// <summary>
 		/// 装備ルビ
 		/// </summary>
@@ -303,7 +310,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.equipmentRuby , value );
 			get => this.equipmentRuby;
 		}
-		
+
 		/// <summary>
 		/// 装備フレーバーテキスト
 		/// </summary>
@@ -408,7 +415,7 @@ namespace Generator.ViewModels {
 			set => this.SetProperty( ref this.selectedEquipmentIndex , value );
 			get => this.selectedEquipmentIndex;
 		}
-		
+
 		/// <summary>
 		/// 装備更新コマンド
 		/// </summary>
@@ -428,11 +435,12 @@ namespace Generator.ViewModels {
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">装備ID</param>
-		public void DeleteEquipment( int id ) { 
+		public void DeleteEquipment( int id )
+		{
 			this.Log( "Start" );
 			this.Log( $"Id is {id}" );
 			this.Equipments.Remove(
-				this.Equipments.FirstOrDefault( row => row.id == id ) 
+				this.Equipments.FirstOrDefault( row => row.id == id )
 			);
 			this.Log( "End" );
 		}
@@ -440,13 +448,15 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備初期設定
 		/// </summary>
-		private void InitEquipment() {
+		private void InitEquipment()
+		{
 			this.Log( "Start" );
 
 			this.Equipments = new ObservableCollection<Equipment>( EquipmentRepository.GetInstance().Rows );
 
 			this.EquipmentsEquipableInEquipablePalces = EquipablePlaceRepository.GetInstance().Rows
-				.Select( row => new HavingData() {
+				.Select( row => new HavingData()
+				{
 					Id = row.Id ,
 					Having = false ,
 					Name = row.Name
@@ -454,7 +464,8 @@ namespace Generator.ViewModels {
 				.ToList();
 
 			this.EquippedWhenIncreasingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
-				.Select( row => new HavingData() {
+				.Select( row => new HavingData()
+				{
 					Id = row.Id ,
 					Having = false ,
 					Name = row.Name
@@ -462,7 +473,8 @@ namespace Generator.ViewModels {
 				.ToList();
 
 			this.EquippedWhenUnequippingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
-				.Select( row => new HavingData() {
+				.Select( row => new HavingData()
+				{
 					Id = row.Id ,
 					Having = false ,
 					Name = row.Name
@@ -470,7 +482,8 @@ namespace Generator.ViewModels {
 				.ToList();
 
 			this.EffectsOfEquipment = ParameterRepository.GetInstance().Rows
-				.Select( row => new HavingData() {
+				.Select( row => new HavingData()
+				{
 					Id = row.Id ,
 					Having = false ,
 					Name = row.Name
@@ -495,11 +508,13 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備の保存
 		/// </summary>
-		private void SaveToEquipment() {
+		private void SaveToEquipment()
+		{
 			this.Log( "Start" );
 
 			EquipmentRepository.GetInstance().Rows = this.Equipments
-				.Select( row => new Equipment() {
+				.Select( row => new Equipment()
+				{
 					Id = row.id ,
 					Name = row.name ,
 					Ruby = row.Ruby ,
@@ -522,14 +537,15 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備更新
 		/// </summary>
-		private void UpdateEquipment() {
+		private void UpdateEquipment()
+		{
 			this.Log( "Start" );
 
-			if( 
-				this.EquipmentId == -1 || 
+			if(
+				this.EquipmentId == -1 ||
 				"".Equals( this.EquipmentName ) ||
 				"".Equals( this.EquipmentRuby ) ||
-				"".Equals( this.EquipmentFlavor ) 
+				"".Equals( this.EquipmentFlavor )
 			) {
 				this.Log( "Equipment Id , Name , Ruby or Flavor is Empty." );
 				return;
@@ -539,7 +555,8 @@ namespace Generator.ViewModels {
 			{
 				List<EquippedWhenIncreasingEquipablePlace> equippedWhenIncreasingEquipablePlaces = this.EquippedWhenIncreasingEquipablePlaces
 					.Where( row => row.Having )
-					.Select( row => new EquippedWhenIncreasingEquipablePlace() {
+					.Select( row => new EquippedWhenIncreasingEquipablePlace()
+					{
 						EquipmentId = this.EquipmentId ,
 						EquipablePlaceId = row.Id
 					} )
@@ -547,14 +564,16 @@ namespace Generator.ViewModels {
 
 				EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
 				equippedWhenIncreasingEquipablePlaces.ForEach( row =>
-					EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows.Add( new EquippedWhenIncreasingEquipablePlace() {
+					EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows.Add( new EquippedWhenIncreasingEquipablePlace()
+					{
 						EquipmentId = this.EquipmentId ,
 						EquipablePlaceId = row.EquipablePlaceId
 					} )
 				);
 
 				this.EquippedWhenIncreasingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
-					.Select( row => new HavingData() {
+					.Select( row => new HavingData()
+					{
 						Id = row.Id ,
 						Having = false ,
 						Name = row.Name ,
@@ -562,12 +581,13 @@ namespace Generator.ViewModels {
 					} )
 					.ToList();
 			}
-			
+
 			// 装備すると装備できなくなる装備可能箇所
 			{
 				List<EquippedWhenUnequippingEquipablePlace> equippedWhenUnequippingEquipablePlaces = this.EquippedWhenUnequippingEquipablePlaces
 					.Where( row => row.Having )
-					.Select( row => new EquippedWhenUnequippingEquipablePlace() {
+					.Select( row => new EquippedWhenUnequippingEquipablePlace()
+					{
 						EquipmentId = this.EquipmentId ,
 						EquipablePlaceId = row.Id
 					} )
@@ -575,14 +595,16 @@ namespace Generator.ViewModels {
 
 				EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
 				equippedWhenUnequippingEquipablePlaces.ForEach( row =>
-					EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Rows.Add( new EquippedWhenUnequippingEquipablePlace() {
+					EquippedWhenUnequippingEquipablePlaceRepository.GetInstance().Rows.Add( new EquippedWhenUnequippingEquipablePlace()
+					{
 						EquipmentId = this.EquipmentId ,
 						EquipablePlaceId = row.EquipablePlaceId
 					} )
 				);
 
 				this.EquippedWhenUnequippingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
-					.Select( row => new HavingData() {
+					.Select( row => new HavingData()
+					{
 						Id = row.Id ,
 						Having = false ,
 						Name = row.Name ,
@@ -595,7 +617,8 @@ namespace Generator.ViewModels {
 			{
 				List<EquipmentEquipableInEquipablePlace> equipmentsEquipableInEquipablePalces = this.EquipmentsEquipableInEquipablePalces
 					.Where( row => row.Having )
-					.Select( row => new EquipmentEquipableInEquipablePlace() {
+					.Select( row => new EquipmentEquipableInEquipablePlace()
+					{
 						EquipmentId = this.EquipmentId ,
 						EquipablePlaceId = row.Id
 					} )
@@ -603,14 +626,16 @@ namespace Generator.ViewModels {
 
 				EquipmentEquipableInEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
 				equipmentsEquipableInEquipablePalces.ForEach( row =>
-					EquipmentEquipableInEquipablePlaceRepository.GetInstance().Rows.Add( new EquipmentEquipableInEquipablePlace() {
+					EquipmentEquipableInEquipablePlaceRepository.GetInstance().Rows.Add( new EquipmentEquipableInEquipablePlace()
+					{
 						EquipmentId = this.EquipmentId ,
 						EquipablePlaceId = row.EquipablePlaceId
 					} )
 				);
 
 				this.EquipmentsEquipableInEquipablePalces = EquipablePlaceRepository.GetInstance().Rows
-					.Select( row => new HavingData() {
+					.Select( row => new HavingData()
+					{
 						Id = row.Id ,
 						Having = false ,
 						Name = row.Name ,
@@ -624,7 +649,8 @@ namespace Generator.ViewModels {
 			{
 				List<EquipmentEffect> equipmentEffects = this.EffectsOfEquipment
 					.Where( row => row.Having )
-					.Select( row => new EquipmentEffect() {
+					.Select( row => new EquipmentEffect()
+					{
 						EquipmentId = this.EquipmentId ,
 						ParameterId = row.Id ,
 						Num = row.Num
@@ -633,7 +659,8 @@ namespace Generator.ViewModels {
 
 				EquipmentEffectRepository.GetInstance().Rows.RemoveAll( row => row.EquipmentId == this.EquipmentId );
 				equipmentEffects.ForEach( row =>
-					EquipmentEffectRepository.GetInstance().Rows.Add( new EquipmentEffect() {
+					EquipmentEffectRepository.GetInstance().Rows.Add( new EquipmentEffect()
+					{
 						EquipmentId = this.EquipmentId ,
 						ParameterId = row.ParameterId ,
 						Num = row.Num
@@ -641,7 +668,8 @@ namespace Generator.ViewModels {
 				);
 
 				this.EffectsOfEquipment = ParameterRepository.GetInstance().Rows
-					.Select( row => new HavingData() {
+					.Select( row => new HavingData()
+					{
 						Id = row.Id ,
 						Having = false ,
 						Name = row.Name ,
@@ -656,7 +684,8 @@ namespace Generator.ViewModels {
 				for( int y = 0 ; y < this.EquipmentSquares.Length ; y++ ) {
 					for( int x = 0 ; x < this.EquipmentSquares[ y ].Length ; x++ ) {
 						if( this.EquipmentSquares[ y ][ x ] ) {
-							EquipmentFreeSquareRepository.GetInstance().Rows.Add( new EquipmentFreeSquare() {
+							EquipmentFreeSquareRepository.GetInstance().Rows.Add( new EquipmentFreeSquare()
+							{
 								EquipmentId = this.EquipmentId ,
 								X = x ,
 								Y = y
@@ -687,7 +716,8 @@ namespace Generator.ViewModels {
 				bool isAdded = equipment is null;
 				this.Log( $"Added is {isAdded}" );
 				if( isAdded ) {
-					this.Equipments.Add( new Equipment() {
+					this.Equipments.Add( new Equipment()
+					{
 						Id = this.EquipmentId ,
 						Name = this.EquipmentName ,
 						Ruby = this.EquipmentRuby ,
@@ -695,7 +725,8 @@ namespace Generator.ViewModels {
 					} );
 				}
 				else {
-					this.Equipments[ this.Equipments.IndexOf( equipment ) ] = new Equipment() {
+					this.Equipments[ this.Equipments.IndexOf( equipment ) ] = new Equipment()
+					{
 						Id = this.EquipmentId ,
 						Name = this.EquipmentName ,
 						Ruby = this.EquipmentRuby ,
@@ -716,11 +747,12 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備編集
 		/// </summary>
-		private void EditEquipment() {
+		private void EditEquipment()
+		{
 			this.Log( "Start" );
 
 			int id = this.Equipments[ this.SelectedEquipmentIndex ].Id;
-			
+
 			// 装備すると増える装備可能箇所
 			{
 				IEnumerable<EquippedWhenIncreasingEquipablePlace> equipablePlaces = EquippedWhenIncreasingEquipablePlaceRepository.GetInstance().Rows
@@ -728,7 +760,8 @@ namespace Generator.ViewModels {
 
 				if( !( equipablePlaces is null ) ) {
 					this.EquippedWhenIncreasingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
-						.Select( row => new HavingData() {
+						.Select( row => new HavingData()
+						{
 							Id = row.id ,
 							Name = row.name ,
 							Having = equipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
@@ -744,7 +777,8 @@ namespace Generator.ViewModels {
 
 				if( !( equipablePlaces is null ) ) {
 					this.EquippedWhenUnequippingEquipablePlaces = EquipablePlaceRepository.GetInstance().Rows
-						.Select( row => new HavingData() {
+						.Select( row => new HavingData()
+						{
 							Id = row.id ,
 							Name = row.name ,
 							Having = equipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
@@ -760,7 +794,8 @@ namespace Generator.ViewModels {
 
 				if( !( equipablePlaces is null ) ) {
 					this.EquipmentsEquipableInEquipablePalces = EquipablePlaceRepository.GetInstance().Rows
-						.Select( row => new HavingData() {
+						.Select( row => new HavingData()
+						{
 							Id = row.id ,
 							Name = row.name ,
 							Having = equipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
@@ -777,7 +812,8 @@ namespace Generator.ViewModels {
 
 				if( !( effects is null ) ) {
 					this.EffectsOfEquipment = ParameterRepository.GetInstance().Rows
-						.Select( row => new HavingData() {
+						.Select( row => new HavingData()
+						{
 							Id = row.id ,
 							Name = row.name ,
 							Having = effects.Any( ef => ef.ParameterId == row.id ) ,
@@ -810,7 +846,7 @@ namespace Generator.ViewModels {
 				this.EquipmentSquares = squares;
 
 			}
-			
+
 			// 装備
 			{
 				this.EquipmentId = id;
@@ -821,7 +857,7 @@ namespace Generator.ViewModels {
 
 			this.Log( "End" );
 		}
-		
+
 		#endregion
 
 		#region ParameterChip
@@ -890,7 +926,7 @@ namespace Generator.ViewModels {
 		/// パラメータチップ一覧
 		/// </summary>
 		public ObservableCollection<ParameterChip> ParameterChips { set; get; }
-		
+
 		/// <summary>
 		/// パラメータチップ更新コマンド
 		/// </summary>
@@ -917,11 +953,12 @@ namespace Generator.ViewModels {
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">パラメータチップID</param>
-		public void DeleteParameterChip( int id ) {
+		public void DeleteParameterChip( int id )
+		{
 			this.Log( "Start" );
 			this.Log( $"Id is {id}" );
-			this.ParameterChips.Remove( 
-				this.ParameterChips.FirstOrDefault( row => row.id == id ) 
+			this.ParameterChips.Remove(
+				this.ParameterChips.FirstOrDefault( row => row.id == id )
 			);
 			this.Log( "End" );
 		}
@@ -929,13 +966,15 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータチップ初期設定
 		/// </summary>
-		private void InitParameterChip() {
+		private void InitParameterChip()
+		{
 			this.Log( "Start" );
 
 			this.ParameterChips = new ObservableCollection<ParameterChip>( ParameterChipRepository.GetInstance().Rows );
 
 			this.EffectsOfParameterChips = ParameterRepository.GetInstance().Rows
-				.Select( row => new HavingData() {
+				.Select( row => new HavingData()
+				{
 					Id = row.Id ,
 					Having = false ,
 					Name = row.Name ,
@@ -961,11 +1000,13 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータチップの保存
 		/// </summary>
-		private void SaveToParameterChip() {
+		private void SaveToParameterChip()
+		{
 			this.Log( "Start" );
 
 			ParameterChipRepository.GetInstance().Rows = this.ParameterChips
-				.Select( row => new ParameterChip() {
+				.Select( row => new ParameterChip()
+				{
 					Id = row.id ,
 					Name = row.name
 				} )
@@ -982,11 +1023,12 @@ namespace Generator.ViewModels {
 		/// 保存コマンド
 		/// </summary>
 		public ReactiveCommand SaveToParameterChipCommand { get; } = new ReactiveCommand();
-		
+
 		/// <summary>
 		/// パラメータチップ更新
 		/// </summary>
-		private void UpdateParameterChip() {
+		private void UpdateParameterChip()
+		{
 			this.Log( "Start" );
 
 			if( this.ParameterChipId == -1 || "".Equals( this.ParameterChipName ) ) {
@@ -998,7 +1040,8 @@ namespace Generator.ViewModels {
 			{
 				List<ParameterChipEffect> parameterChipEffects = this.EffectsOfParameterChips
 				.Where( row => row.Having )
-				.Select( row => new ParameterChipEffect() {
+				.Select( row => new ParameterChipEffect()
+				{
 					ParameterChipId = this.ParameterChipId ,
 					ParameterId = row.Id ,
 					Num = row.Num
@@ -1007,7 +1050,8 @@ namespace Generator.ViewModels {
 
 				ParameterChipEffectRepository.GetInstance().Rows.RemoveAll( row => row.ParameterChipId == this.ParameterChipId );
 				parameterChipEffects.ForEach( row =>
-					ParameterChipEffectRepository.GetInstance().Rows.Add( new ParameterChipEffect() {
+					ParameterChipEffectRepository.GetInstance().Rows.Add( new ParameterChipEffect()
+					{
 						ParameterChipId = this.ParameterChipId ,
 						ParameterId = row.ParameterId ,
 						Num = row.Num
@@ -1015,7 +1059,8 @@ namespace Generator.ViewModels {
 				);
 
 				this.EffectsOfParameterChips = ParameterRepository.GetInstance().Rows
-					.Select( row => new HavingData() {
+					.Select( row => new HavingData()
+					{
 						Id = row.Id ,
 						Having = false ,
 						Name = row.Name ,
@@ -1029,9 +1074,10 @@ namespace Generator.ViewModels {
 
 				ParameterChipSquareRepository.GetInstance().Rows.RemoveAll( row => row.ParameterChipId == this.ParameterChipId );
 				for( int y = 0 ; y < this.ParameterSquares.Length ; y++ ) {
-					for( int x = 0 ; x < this.ParameterSquares[y].Length ; x++ ) {
-						if( this.ParameterSquares[y][x] ) {
-							ParameterChipSquareRepository.GetInstance().Rows.Add( new ParameterChipSquare() {
+					for( int x = 0 ; x < this.ParameterSquares[ y ].Length ; x++ ) {
+						if( this.ParameterSquares[ y ][ x ] ) {
+							ParameterChipSquareRepository.GetInstance().Rows.Add( new ParameterChipSquare()
+							{
 								ParameterChipId = this.ParameterChipId ,
 								X = x ,
 								Y = y
@@ -1062,13 +1108,15 @@ namespace Generator.ViewModels {
 				bool isAdded = parameterChip is null;
 				this.Log( $"Added is {isAdded}" );
 				if( isAdded ) {
-					this.ParameterChips.Add( new ParameterChip() {
+					this.ParameterChips.Add( new ParameterChip()
+					{
 						Id = this.ParameterChipId ,
 						Name = this.ParameterChipName
 					} );
 				}
 				else {
-					this.ParameterChips[ this.ParameterChips.IndexOf( parameterChip ) ] = new ParameterChip() {
+					this.ParameterChips[ this.ParameterChips.IndexOf( parameterChip ) ] = new ParameterChip()
+					{
 						Id = this.ParameterChipId ,
 						Name = this.ParameterChipName
 					};
@@ -1085,7 +1133,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータチップ編集
 		/// </summary>
-		private void EditParameterChip() {
+		private void EditParameterChip()
+		{
 			this.Log( "Start" );
 
 			int id = this.ParameterChips[ this.SelectedParameterChipIndex ].Id;
@@ -1096,7 +1145,8 @@ namespace Generator.ViewModels {
 					.Where( row => row.ParameterChipId == id );
 				if( !( effects is null ) ) {
 					this.EffectsOfParameterChips = ParameterRepository.GetInstance().Rows
-						.Select( row => new HavingData() {
+						.Select( row => new HavingData()
+						{
 							Id = row.id ,
 							Name = row.name ,
 							Having = effects.Any( ef => ef.ParameterId == row.id ) ,
@@ -1133,10 +1183,10 @@ namespace Generator.ViewModels {
 				this.ParameterChipId = id;
 				this.ParameterChipName = this.ParameterChips[ this.SelectedParameterChipIndex ].Name;
 			}
-			
+
 			this.Log( "End" );
 		}
-		
+
 		#endregion
 
 		#region Parameter
@@ -1185,7 +1235,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータの追加
 		/// </summary>
-		private void AddParameter() {
+		private void AddParameter()
+		{
 			this.Log( "Start" );
 			this.Log( $"Parameter Id is {this.ParameterId}" );
 			this.Log( $"Parameter Name is {this.ParameterName}" );
@@ -1195,7 +1246,8 @@ namespace Generator.ViewModels {
 				this.Log( "End" );
 				return;
 			}
-			this.Parameters.Add( new Parameter() {
+			this.Parameters.Add( new Parameter()
+			{
 				Id = this.ParameterId ,
 				Name = this.ParameterName
 			} );
@@ -1209,7 +1261,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータの保存
 		/// </summary>
-		private void SaveToParameter() {
+		private void SaveToParameter()
+		{
 			this.Log( "Start" );
 			ParameterRepository.GetInstance().Rows = this.Parameters.ToList();
 			ParameterRepository.GetInstance().Write();
@@ -1220,7 +1273,8 @@ namespace Generator.ViewModels {
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">パラメータID</param>
-		public void DeleteParameter( int id ) {
+		public void DeleteParameter( int id )
+		{
 			this.Log( "Start" );
 			this.Log( $"Id is {id}" );
 			this.Parameters.Remove(
@@ -1232,7 +1286,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// パラメータ初期設定
 		/// </summary>
-		private void InitParameter() {
+		private void InitParameter()
+		{
 			this.Log( "Start" );
 
 			this.Parameters = new ObservableCollection<Parameter>( ParameterRepository.GetInstance().Rows );
@@ -1295,7 +1350,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備可能箇所の追加
 		/// </summary>
-		private void AddEquipablePlace() {
+		private void AddEquipablePlace()
+		{
 			this.Log( "Start" );
 			this.Log( $"Equipable Place Id is {this.EquipablePlaceId}" );
 			this.Log( $"Equipable Place Name is {this.EquipablePlaceName}" );
@@ -1305,21 +1361,23 @@ namespace Generator.ViewModels {
 				this.Log( "End" );
 				return;
 			}
-			this.EquipablePlaces.Add( new EquipablePlace() {
+			this.EquipablePlaces.Add( new EquipablePlace()
+			{
 				Id = this.EquipablePlaceId ,
 				Name = this.EquipablePlaceName
 			} );
 
 			this.EquipablePlaceId = -1;
 			this.EquipablePlaceName = "";
-			
+
 			this.Log( "End" );
 		}
 
 		/// <summary>
 		/// 装備可能箇所の保存
 		/// </summary>
-		private void SaveToEquipablePlace() {
+		private void SaveToEquipablePlace()
+		{
 			this.Log( "Start" );
 			EquipablePlaceRepository.GetInstance().Rows = this.EquipablePlaces.ToList();
 			EquipablePlaceRepository.GetInstance().Write();
@@ -1330,7 +1388,8 @@ namespace Generator.ViewModels {
 		/// 一覧削除
 		/// </summary>
 		/// <param name="id">装備可能箇所ID</param>
-		public void DeleteEquipablePlace( int id ) {
+		public void DeleteEquipablePlace( int id )
+		{
 			this.Log( "Start" );
 			this.Log( $" Id is {id}" );
 			this.EquipablePlaces.Remove(
@@ -1342,7 +1401,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 装備可能箇所初期設定
 		/// </summary>
-		private void InitEquipmentPlace() {
+		private void InitEquipmentPlace()
+		{
 			this.Log( "Start" );
 
 			this.EquipablePlaces = new ObservableCollection<EquipablePlace>( EquipablePlaceRepository.GetInstance().Rows );
@@ -1356,7 +1416,7 @@ namespace Generator.ViewModels {
 
 			this.Log( "End" );
 		}
-		
+
 		#endregion
 
 		#region InitialSetting
@@ -1386,7 +1446,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 初期設定の初期設定
 		/// </summary>
-		private void InitInitialSetting() {
+		private void InitInitialSetting()
+		{
 			this.Log( "Start" );
 
 			this.FolderPath = this.GetDataFolderPath();
@@ -1406,7 +1467,8 @@ namespace Generator.ViewModels {
 		/// データフォルダのパス取得
 		/// </summary>
 		/// <returns>データフォルダのパス</returns>
-		private string GetDataFolderPath() {
+		private string GetDataFolderPath()
+		{
 			this.Log( "Start" );
 
 			// configのパスを取得
@@ -1441,7 +1503,8 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// 初期設定の保存
 		/// </summary>
-		private void SaveToInitialSetting() {
+		private void SaveToInitialSetting()
+		{
 			this.Log( "Start" );
 
 			// configのパスを取得
@@ -1480,9 +1543,11 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// フォルダ選択
 		/// </summary>
-		private void SelectFolder() {
+		private void SelectFolder()
+		{
 			this.Log( "Start" );
-			FolderBrowserDialog dialog = new FolderBrowserDialog {
+			FolderBrowserDialog dialog = new FolderBrowserDialog
+			{
 				Description = "フォルダを選択してください"
 			};
 			if( dialog.ShowDialog() == DialogResult.OK ) {
@@ -1499,18 +1564,55 @@ namespace Generator.ViewModels {
 
 		#endregion
 
-
-
-
-		
-
-
-		
-
-
-		
-		
 		#region Body
+
+		/// <summary>
+		/// 素体ID
+		/// </summary>
+		private int bodyId = -1;
+		/// <summary>
+		/// 素体ID
+		/// </summary>
+		public int BodyId {
+			set => this.SetProperty( ref this.bodyId , value );
+			get => this.bodyId;
+		}
+
+		/// <summary>
+		/// 素体名
+		/// </summary>
+		private string bodyName = "";
+		/// <summary>
+		/// 素体名
+		/// </summary>
+		public string BodyName {
+			set => this.SetProperty( ref this.bodyName , value );
+			get => this.bodyName;
+		}
+
+		/// <summary>
+		/// 素体ルビ
+		/// </summary>
+		private string bodyRuby = "";
+		/// <summary>
+		/// 素体ルビ
+		/// </summary>
+		public string BodyRuby {
+			set => this.SetProperty( ref this.bodyRuby , value );
+			get => this.bodyRuby;
+		}
+
+		/// <summary>
+		/// 素体フレーバーテキスト
+		/// </summary>
+		private string bodyFlavor = "";
+		/// <summary>
+		/// 素体フレーバーテキスト
+		/// </summary>
+		public string BodyFlavor {
+			set => this.SetProperty( ref this.bodyFlavor , value );
+			get => this.bodyFlavor;
+		}
 
 		/// <summary>
 		/// 保存コマンド
@@ -1543,7 +1645,385 @@ namespace Generator.ViewModels {
 			get => this.effectsOfBody;
 		}
 
+		/// <summary>
+		/// 素体の空きマス
+		/// </summary>
+		private bool[][] bodySquares = new bool[][]{
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false } ,
+			new bool[]{ false , false , false , false , false , false , false , false , false , false }
+		};
+
+		/// <summary>
+		/// 素体の空きマス
+		/// </summary>
+		public bool[][] BodySquares {
+			set => this.SetProperty( ref this.bodySquares , value );
+			get => this.bodySquares;
+		}
+
+		/// <summary>
+		/// 素体一覧
+		/// </summary>
+		public ObservableCollection<Body> Bodies { set; get; }
+
+		/// <summary>
+		/// 選択中の素体の要素番号
+		/// </summary>
+		private int selectedBodyIndex;
+		/// <summary>
+		/// 選択中の素体の要素番号
+		/// </summary>
+		public int SelectedBodyIndex {
+			set => this.SetProperty( ref this.selectedBodyIndex , value );
+			get => this.selectedBodyIndex;
+		}
+
+		/// <summary>
+		/// 素体更新コマンド
+		/// </summary>
+		public ReactiveCommand UpdateBodyCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 素体編集コマンド
+		/// </summary>
+		public ReactiveCommand EditBodyCommand { get; } = new ReactiveCommand();
+
+		/// <summary>
+		/// 素体初期設定
+		/// </summary>
+		private void InitBody()
+		{
+
+			this.Bodies = new ObservableCollection<Body>( BodyRepository.GetInstance().Rows );
+
+			EquipablePlaceRepository.GetInstance().Rows.ForEach( row => {
+				this.EquipablePlacesOfBody.Add( new HavingData()
+				{
+					Having = false ,
+					Id = row.Id ,
+					Name = row.Name
+				} );
+			} );
+
+			ParameterRepository.GetInstance().Rows.ForEach( row => {
+				this.EffectsOfBody.Add( new HavingData()
+				{
+					Id = row.Id ,
+					Name = row.Name ,
+					Having = false ,
+					Num = 0
+				} );
+			} );
+
+			this.UpdateBodyCommand
+				.Subscribe( _ => this.UpdateBody() )
+				.AddTo( this.Disposable );
+
+			this.EditBodyCommand
+				.Subscribe( _ => this.EditBody() )
+				.AddTo( this.Disposable );
+
+			this.SaveToBodyCommand
+				.Subscribe( _ => this.SaveToBody() )
+				.AddTo( this.Disposable );
+
+		}
+
+		/// <summary>
+		/// 素体の保存
+		/// </summary>
+		private void SaveToBody()
+		{
+
+			BodyRepository.GetInstance().Rows = this.Bodies
+				.Select( row => new Body()
+				{
+					Id = row.id ,
+					Name = row.name ,
+					Ruby = row.Ruby ,
+					Flavor = row.Flavor
+
+				} )
+				.ToList();
+
+			BodyRepository.GetInstance().Write();
+			BodyFreeSquareRepository.GetInstance().Write();
+			BodyEffectRepository.GetInstance().Write();
+			BodyEquipablePlaceRepository.GetInstance().Write();
+		}
+
+		/// <summary>
+		/// 装備更新
+		/// </summary>
+		private void UpdateBody()
+		{
+			this.Log( "Start" );
+
+			if(
+				this.BodyId == -1 ||
+				"".Equals( this.BodyName ) ||
+				"".Equals( this.BodyRuby ) ||
+				"".Equals( this.BodyFlavor )
+			) {
+				this.Log( "Body Id , Name , Ruby or Flavor is Empty." );
+				return;
+			}
+			
+			// 素体：装備可能箇所
+			{
+				List<BodyEquipablePlace> bodyEquipablePlace = this.EquipablePlacesOfBody
+					.Where( row => row.Having )
+					.Select( row => new BodyEquipablePlace()
+					{
+						BodyId = this.BodyId ,
+						EquipablePlaceId = row.Id
+					} )
+					.ToList();
+
+				BodyEquipablePlaceRepository.GetInstance().Rows.RemoveAll( row => row.BodyId == this.BodyId );
+				bodyEquipablePlace.ForEach( row =>
+					BodyEquipablePlaceRepository.GetInstance().Rows.Add( new BodyEquipablePlace()
+					{
+						BodyId = this.BodyId ,
+						EquipablePlaceId = row.EquipablePlaceId
+					} )
+				);
+
+				this.EquipablePlacesOfBody = EquipablePlaceRepository.GetInstance().Rows
+					.Select( row => new HavingData()
+					{
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+			}
+
+			// 素体の効果
+			{
+				List<BodyEffect> bodyEffects = this.EffectsOfBody
+					.Where( row => row.Having )
+					.Select( row => new BodyEffect()
+					{
+						BodyId = this.BodyId ,
+						ParameterId = row.Id ,
+						Num = row.Num
+					} )
+					.ToList();
+
+				BodyEffectRepository.GetInstance().Rows.RemoveAll( row => row.BodyId == this.BodyId );
+				bodyEffects.ForEach( row =>
+					BodyEffectRepository.GetInstance().Rows.Add( new BodyEffect()
+					{
+						BodyId = this.BodyId ,
+						ParameterId = row.ParameterId ,
+						Num = row.Num
+					} )
+				);
+
+				this.EffectsOfBody = ParameterRepository.GetInstance().Rows
+					.Select( row => new HavingData()
+					{
+						Id = row.Id ,
+						Having = false ,
+						Name = row.Name ,
+						Num = 0
+					} )
+					.ToList();
+			}
+
+			// 素体の空きマス
+			{
+				BodyFreeSquareRepository.GetInstance().Rows.RemoveAll( row => row.BodyId == this.BodyId );
+				for( int y = 0 ; y < this.BodySquares.Length ; y++ ) {
+					for( int x = 0 ; x < this.BodySquares[ y ].Length ; x++ ) {
+						if( this.BodySquares[ y ][ x ] ) {
+							BodyFreeSquareRepository.GetInstance().Rows.Add( new BodyFreeSquare()
+							{
+								BodyId = this.BodyId ,
+								X = x ,
+								Y = y
+							} );
+						}
+					}
+				}
+
+				this.BodySquares = new bool[][]{
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false }
+				};
+
+			}
+
+			// 素体
+			{
+				Body body = this.Bodies.FirstOrDefault( row => row.id == this.EquipmentId );
+
+				bool isAdded = body is null;
+				this.Log( $"Added is {isAdded}" );
+				if( isAdded ) {
+					this.Bodies.Add( new Body()
+					{
+						Id = this.BodyId ,
+						Name = this.BodyName ,
+						Ruby = this.BodyRuby ,
+						Flavor = this.BodyFlavor
+					} );
+				}
+				else {
+					this.Bodies[ this.Bodies.IndexOf( body ) ] = new Body()
+					{
+						Id = this.BodyId ,
+						Name = this.BodyName ,
+						Ruby = this.BodyRuby ,
+						Flavor = this.BodyFlavor
+					};
+				}
+
+				this.BodyId = -1;
+				this.BodyName = "";
+				this.BodyRuby = "";
+				this.BodyFlavor = "";
+
+			}
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 装備編集
+		/// </summary>
+		private void EditBody()
+		{
+			this.Log( "Start" );
+
+			int id = this.Bodies[ this.SelectedBodyIndex ].Id;
+
+			// 素体：装備可能箇所
+			{
+				IEnumerable<BodyEquipablePlace> bodyEquipablePlaces = BodyEquipablePlaceRepository.GetInstance().Rows
+					.Where( row => row.BodyId == id );
+
+				if( !( bodyEquipablePlaces is null ) ) {
+					this.EquipablePlacesOfBody = EquipablePlaceRepository.GetInstance().Rows
+						.Select( row => new HavingData()
+						{
+							Id = row.id ,
+							Name = row.name ,
+							Having = bodyEquipablePlaces.Any( ep => ep.EquipablePlaceId == row.id )
+						} )
+						.ToList();
+				}
+			}
+
+			// 素体の効果
+			{
+
+				IEnumerable<BodyEffect> effects = BodyEffectRepository.GetInstance().Rows
+					.Where( row => row.BodyId == id );
+
+				if( !( effects is null ) ) {
+					this.EffectsOfBody = ParameterRepository.GetInstance().Rows
+						.Select( row => new HavingData()
+						{
+							Id = row.id ,
+							Name = row.name ,
+							Having = effects.Any( ef => ef.ParameterId == row.id ) ,
+							Num = effects?.FirstOrDefault( ef => ef.ParameterId == row.id )?.Num ?? 0
+						} )
+						.ToList();
+				}
+
+			}
+
+			// 素体の空きマス
+			{
+				bool[][] squares = new bool[][]{
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false } ,
+					new bool[] { false , false , false , false , false , false , false , false , false , false }
+				};
+				IEnumerable<BodyFreeSquare> data = BodyFreeSquareRepository.GetInstance().Rows
+					.Where( row => row.BodyId == id );
+				data.ToList().ForEach( row => {
+					squares[ row.Y ][ row.X ] = true;
+				} );
+				this.BodySquares = squares;
+
+			}
+
+			// 素体
+			{
+				this.BodyId = id;
+				this.BodyName = this.Bodies[ this.SelectedBodyIndex ].Name;
+				this.BodyRuby = this.Bodies[ this.SelectedBodyIndex ].Ruby;
+				this.BodyFlavor = this.Bodies[ this.SelectedBodyIndex ].Flavor;
+			}
+
+			this.Log( "End" );
+		}
+
+		/// <summary>
+		/// 一覧削除
+		/// </summary>
+		/// <param name="id">素体ID</param>
+		public void DeleteBody( int id ) 
+		{
+			this.Log( "Start" );
+			this.Log( $"Id is {id}" );
+			this.Bodies.Remove(
+				this.Bodies.FirstOrDefault( row => row.id == id )
+			);
+			this.Log( "End" );
+		}
+
 		#endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 		#region Chapter
 
@@ -1553,7 +2033,7 @@ namespace Generator.ViewModels {
 		public ReactiveCommand SaveToChapterCommand { get; } = new ReactiveCommand();
 
 		#endregion
-				
+
 		#region Save
 
 		/// <summary>
@@ -1697,32 +2177,8 @@ namespace Generator.ViewModels {
 
 		#endregion
 
-		void InitialTemp() {
-
-			EquipablePlaceRepository.GetInstance().Rows.ForEach( row => {
-				this.EquipablePlacesOfBody.Add( new HavingData() {
-					Having = false ,
-					Id = row.Id ,
-					Name = row.Name
-				} );
-			} );
-
-			ParameterRepository.GetInstance().Rows.ForEach( row => {
-				this.EffectsOfBody.Add( new HavingData() {
-					Id = row.Id ,
-					Name = row.Name ,
-					Having = false ,
-					Num = 0
-				} );
-			} );
-			
-			#region Body
-
-			this.SaveToBodyCommand
-				.Subscribe( _ => this.SaveToBody() )
-				.AddTo( this.Disposable );
-
-			#endregion
+		void InitialTemp()
+		{
 
 			#region Chapter
 
@@ -1731,7 +2187,7 @@ namespace Generator.ViewModels {
 				.AddTo( this.Disposable );
 
 			#endregion
-			
+
 			#region Save
 
 			this.SelectSave( 0 );
@@ -1752,26 +2208,7 @@ namespace Generator.ViewModels {
 			#endregion
 
 		}
-		
-		#region Body
 
-		/// <summary>
-		/// 素体の保存
-		/// </summary>
-		private void SaveToBody() {
-			BodyRepository.GetInstance().Write();
-			BodyFreeSquareRepository.GetInstance().Write();
-			BodyEffectRepository.GetInstance().Write();
-			BodyEquipablePlaceRepository.GetInstance().Write();
-		}
-
-		/// <summary>
-		/// 一覧削除
-		/// </summary>
-		/// <param name="id">素体ID</param>
-		public void DeleteBody( int id ) => this.Log( "未実装" );
-
-		#endregion
 
 		#region Chapter
 
@@ -1787,14 +2224,15 @@ namespace Generator.ViewModels {
 		public void DeleteChapter( int id ) => this.Log( "未実装" );
 
 		#endregion
-		
+
 		#region Save
 
 		/// <summary>
 		/// セーブデータ選択
 		/// </summary>
 		/// <param name="saveId">セーブデータID</param>
-		private void SelectSave( int saveId ) {
+		private void SelectSave( int saveId )
+		{
 
 			this.Log( $"Save Id is {saveId}." );
 
@@ -1813,7 +2251,8 @@ namespace Generator.ViewModels {
 
 				List<HavingData> list = new List<HavingData>();
 				ChapterRepository.GetInstance().Rows.ForEach( row => {
-					list.Add( new HavingData() {
+					list.Add( new HavingData()
+					{
 						Id = row.Id ,
 						Name = row.Name ,
 						Having = clearedChapterIds.FirstOrDefault( id => id == row.id ) != 0 ,
@@ -1834,7 +2273,8 @@ namespace Generator.ViewModels {
 
 				List<HavingData> list = new List<HavingData>();
 				BodyRepository.GetInstance().Rows.ForEach( row => {
-					list.Add( new HavingData() {
+					list.Add( new HavingData()
+					{
 						Id = row.Id ,
 						Name = row.Name ,
 						Having = havingBodyIds.FirstOrDefault( id => id == row.id ) != 0 ,
@@ -1856,7 +2296,8 @@ namespace Generator.ViewModels {
 
 				List<HavingData> list = new List<HavingData>();
 				EquipmentRepository.GetInstance().Rows.ForEach( row => {
-					list.Add( new HavingData() {
+					list.Add( new HavingData()
+					{
 						Id = row.Id ,
 						Name = row.Name ,
 						Having = havingEquipmentIds.FirstOrDefault( id => id == row.id ) != 0 ,
@@ -1875,10 +2316,11 @@ namespace Generator.ViewModels {
 				IEnumerable<int> havingParameterChipIds = HavingParameterChipRepository.GetInstance().Rows
 					.Where( row => row.SaveId == saveId )
 					.Select( row => row.ParameterChipId );
-				
+
 				List<HavingData> list = new List<HavingData>();
 				ParameterChipRepository.GetInstance().Rows.ForEach( row => {
-					list.Add( new HavingData() {
+					list.Add( new HavingData()
+					{
 						Id = row.Id ,
 						Name = row.Name ,
 						Having = havingParameterChipIds.FirstOrDefault( id => id == row.id ) != 0 ,
@@ -1894,9 +2336,10 @@ namespace Generator.ViewModels {
 		/// <summary>
 		/// セーブの保存
 		/// </summary>
-		private void SaveToSave() {
+		private void SaveToSave()
+		{
 
-			int saveId = 
+			int saveId =
 				this.IsSelectedSave1 ? 0 :
 				this.IsSelectedSave2 ? 1 :
 				this.IsSelectedSave3 ? 2 :
@@ -1918,7 +2361,8 @@ namespace Generator.ViewModels {
 				// 画面上の一覧から新規にリストを作成する
 				IEnumerable<HavingBody> newList = this.HavingBodies
 					.Where( row => row.Having )
-					.Select( row => new HavingBody() {
+					.Select( row => new HavingBody()
+					{
 						SaveId = saveId ,
 						BodyId = row.Id
 					} );
@@ -1936,7 +2380,8 @@ namespace Generator.ViewModels {
 				// 画面上の一覧から新規にリストを作成する
 				IEnumerable<HavingEquipment> newList = this.HavingEquipments
 					.Where( row => row.Having )
-					.Select( row => new HavingEquipment() {
+					.Select( row => new HavingEquipment()
+					{
 						SaveId = saveId ,
 						EquipmentId = row.Id
 					} );
@@ -1954,7 +2399,8 @@ namespace Generator.ViewModels {
 				// 画面上の一覧から新規にリストを作成する
 				IEnumerable<ChapterClearStatus> newList = this.ClearedChapters
 					.Where( row => row.Having )
-					.Select( row => new ChapterClearStatus() {
+					.Select( row => new ChapterClearStatus()
+					{
 						SaveId = saveId ,
 						ChapterId = row.Id
 					} );
@@ -1973,7 +2419,7 @@ namespace Generator.ViewModels {
 		public void DeleteSave( int id ) => this.Log( "未実装" );
 
 		#endregion
-		
+
 	}
 
 }

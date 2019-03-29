@@ -50,7 +50,8 @@
 				<TextBox
 					Grid.Row="0"
 					Grid.Column="1"
-					Margin="5,5,5,5" />
+					Margin="5,5,5,5"
+					Text="{ Binding BodyId }" />
 
 				<!--名前-->
 				<Label
@@ -61,7 +62,8 @@
 				<TextBox
 					Grid.Row="1"
 					Grid.Column="1"
-					Margin="5,5,5,5" />
+					Margin="5,5,5,5"
+					Text="{ Binding BodyName }" />
 
 				<!--ルビ-->
 				<Label
@@ -72,7 +74,8 @@
 				<TextBox
 					Grid.Row="2"
 					Grid.Column="1"
-					Margin="5,5,5,5" />
+					Margin="5,5,5,5"
+					Text="{ Binding BodyRuby }" />
 
 				<!--フレーバーテキスト-->
 				<Label
@@ -83,7 +86,8 @@
 				<TextBox
 					Grid.Row="3"
 					Grid.Column="1"
-					Margin="5,5,5,5" />
+					Margin="5,5,5,5"
+					Text="{ Binding BodyFlavor }" />
 
 				<Grid
 					Grid.Row="4"
@@ -189,107 +193,109 @@
 							<ColumnDefinition Width="auto" />
 							<ColumnDefinition Width="auto" />
 						</Grid.ColumnDefinitions>
-
-						<CheckBox Grid.Row="0" Grid.Column="0" />
-						<CheckBox Grid.Row="0" Grid.Column="1" />
-						<CheckBox Grid.Row="0" Grid.Column="2" />
-						<CheckBox Grid.Row="0" Grid.Column="3" />
-						<CheckBox Grid.Row="0" Grid.Column="4" />
-						<CheckBox Grid.Row="0" Grid.Column="5" />
-						<CheckBox Grid.Row="0" Grid.Column="6" />
-						<CheckBox Grid.Row="0" Grid.Column="7" />
-						<CheckBox Grid.Row="0" Grid.Column="8" />
-						<CheckBox Grid.Row="0" Grid.Column="9" />
-						<CheckBox Grid.Row="1" Grid.Column="0" />
-						<CheckBox Grid.Row="1" Grid.Column="1" />
-						<CheckBox Grid.Row="1" Grid.Column="2" />
-						<CheckBox Grid.Row="1" Grid.Column="3" />
-						<CheckBox Grid.Row="1" Grid.Column="4" />
-						<CheckBox Grid.Row="1" Grid.Column="5" />
-						<CheckBox Grid.Row="1" Grid.Column="6" />
-						<CheckBox Grid.Row="1" Grid.Column="7" />
-						<CheckBox Grid.Row="1" Grid.Column="8" />
-						<CheckBox Grid.Row="1" Grid.Column="9" />
-						<CheckBox Grid.Row="2" Grid.Column="0" />
-						<CheckBox Grid.Row="2" Grid.Column="1" />
-						<CheckBox Grid.Row="2" Grid.Column="2" />
-						<CheckBox Grid.Row="2" Grid.Column="3" />
-						<CheckBox Grid.Row="2" Grid.Column="4" />
-						<CheckBox Grid.Row="2" Grid.Column="5" />
-						<CheckBox Grid.Row="2" Grid.Column="6" />
-						<CheckBox Grid.Row="2" Grid.Column="7" />
-						<CheckBox Grid.Row="2" Grid.Column="8" />
-						<CheckBox Grid.Row="2" Grid.Column="9" />
-						<CheckBox Grid.Row="3" Grid.Column="0" />
-						<CheckBox Grid.Row="3" Grid.Column="1" />
-						<CheckBox Grid.Row="3" Grid.Column="2" />
-						<CheckBox Grid.Row="3" Grid.Column="3" />
-						<CheckBox Grid.Row="3" Grid.Column="4" />
-						<CheckBox Grid.Row="3" Grid.Column="5" />
-						<CheckBox Grid.Row="3" Grid.Column="6" />
-						<CheckBox Grid.Row="3" Grid.Column="7" />
-						<CheckBox Grid.Row="3" Grid.Column="8" />
-						<CheckBox Grid.Row="3" Grid.Column="9" />
-						<CheckBox Grid.Row="4" Grid.Column="0" />
-						<CheckBox Grid.Row="4" Grid.Column="1" />
-						<CheckBox Grid.Row="4" Grid.Column="2" />
-						<CheckBox Grid.Row="4" Grid.Column="3" />
-						<CheckBox Grid.Row="4" Grid.Column="4" />
-						<CheckBox Grid.Row="4" Grid.Column="5" />
-						<CheckBox Grid.Row="4" Grid.Column="6" />
-						<CheckBox Grid.Row="4" Grid.Column="7" />
-						<CheckBox Grid.Row="4" Grid.Column="8" />
-						<CheckBox Grid.Row="4" Grid.Column="9" />
-						<CheckBox Grid.Row="5" Grid.Column="0" />
-						<CheckBox Grid.Row="5" Grid.Column="1" />
-						<CheckBox Grid.Row="5" Grid.Column="2" />
-						<CheckBox Grid.Row="5" Grid.Column="3" />
-						<CheckBox Grid.Row="5" Grid.Column="4" />
-						<CheckBox Grid.Row="5" Grid.Column="5" />
-						<CheckBox Grid.Row="5" Grid.Column="6" />
-						<CheckBox Grid.Row="5" Grid.Column="7" />
-						<CheckBox Grid.Row="5" Grid.Column="8" />
-						<CheckBox Grid.Row="5" Grid.Column="9" />
-						<CheckBox Grid.Row="6" Grid.Column="0" />
-						<CheckBox Grid.Row="6" Grid.Column="1" />
-						<CheckBox Grid.Row="6" Grid.Column="2" />
-						<CheckBox Grid.Row="6" Grid.Column="3" />
-						<CheckBox Grid.Row="6" Grid.Column="4" />
-						<CheckBox Grid.Row="6" Grid.Column="5" />
-						<CheckBox Grid.Row="6" Grid.Column="6" />
-						<CheckBox Grid.Row="6" Grid.Column="7" />
-						<CheckBox Grid.Row="6" Grid.Column="8" />
-						<CheckBox Grid.Row="6" Grid.Column="9" />
-						<CheckBox Grid.Row="7" Grid.Column="0" />
-						<CheckBox Grid.Row="7" Grid.Column="1" />
-						<CheckBox Grid.Row="7" Grid.Column="2" />
-						<CheckBox Grid.Row="7" Grid.Column="3" />
-						<CheckBox Grid.Row="7" Grid.Column="4" />
-						<CheckBox Grid.Row="7" Grid.Column="5" />
-						<CheckBox Grid.Row="7" Grid.Column="6" />
-						<CheckBox Grid.Row="7" Grid.Column="7" />
-						<CheckBox Grid.Row="7" Grid.Column="8" />
-						<CheckBox Grid.Row="7" Grid.Column="9" />
-						<CheckBox Grid.Row="8" Grid.Column="0" />
-						<CheckBox Grid.Row="8" Grid.Column="1" />
-						<CheckBox Grid.Row="8" Grid.Column="2" />
-						<CheckBox Grid.Row="8" Grid.Column="3" />
-						<CheckBox Grid.Row="8" Grid.Column="4" />
-						<CheckBox Grid.Row="8" Grid.Column="5" />
-						<CheckBox Grid.Row="8" Grid.Column="6" />
-						<CheckBox Grid.Row="8" Grid.Column="7" />
-						<CheckBox Grid.Row="8" Grid.Column="8" />
-						<CheckBox Grid.Row="8" Grid.Column="9" />
-						<CheckBox Grid.Row="9" Grid.Column="0" />
-						<CheckBox Grid.Row="9" Grid.Column="1" />
-						<CheckBox Grid.Row="9" Grid.Column="2" />
-						<CheckBox Grid.Row="9" Grid.Column="3" />
-						<CheckBox Grid.Row="9" Grid.Column="4" />
-						<CheckBox Grid.Row="9" Grid.Column="5" />
-						<CheckBox Grid.Row="9" Grid.Column="6" />
-						<CheckBox Grid.Row="9" Grid.Column="7" />
-						<CheckBox Grid.Row="9" Grid.Column="8" />
-						<CheckBox Grid.Row="9" Grid.Column="9" />
+						<CheckBox
+							Grid.Row="0"
+							Grid.Column="0"
+							IsChecked="{ Binding BodySquares[0][0] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{ Binding BodySquares[0][1] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{ Binding BodySquares[0][2] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="3" IsChecked="{ Binding BodySquares[0][3] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="4" IsChecked="{ Binding BodySquares[0][4] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="5" IsChecked="{ Binding BodySquares[0][5] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="6" IsChecked="{ Binding BodySquares[0][6] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="7" IsChecked="{ Binding BodySquares[0][7] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="8" IsChecked="{ Binding BodySquares[0][8] }"/>
+						<CheckBox Grid.Row="0" Grid.Column="9" IsChecked="{ Binding BodySquares[0][9] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{ Binding BodySquares[1][0] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{ Binding BodySquares[1][1] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{ Binding BodySquares[1][2] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="3" IsChecked="{ Binding BodySquares[1][3] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="4" IsChecked="{ Binding BodySquares[1][4] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="5" IsChecked="{ Binding BodySquares[1][5] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="6" IsChecked="{ Binding BodySquares[1][6] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="7" IsChecked="{ Binding BodySquares[1][7] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="8" IsChecked="{ Binding BodySquares[1][8] }"/>
+						<CheckBox Grid.Row="1" Grid.Column="9" IsChecked="{ Binding BodySquares[1][9] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{ Binding BodySquares[2][0] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{ Binding BodySquares[2][1] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{ Binding BodySquares[2][2] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="3" IsChecked="{ Binding BodySquares[2][3] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="4" IsChecked="{ Binding BodySquares[2][4] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="5" IsChecked="{ Binding BodySquares[2][5] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="6" IsChecked="{ Binding BodySquares[2][6] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="7" IsChecked="{ Binding BodySquares[2][7] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="8" IsChecked="{ Binding BodySquares[2][8] }"/>
+						<CheckBox Grid.Row="2" Grid.Column="9" IsChecked="{ Binding BodySquares[2][9] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{ Binding BodySquares[3][0] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="1" IsChecked="{ Binding BodySquares[3][1] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="2" IsChecked="{ Binding BodySquares[3][2] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="3" IsChecked="{ Binding BodySquares[3][3] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="4" IsChecked="{ Binding BodySquares[3][4] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="5" IsChecked="{ Binding BodySquares[3][5] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="6" IsChecked="{ Binding BodySquares[3][6] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="7" IsChecked="{ Binding BodySquares[3][7] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="8" IsChecked="{ Binding BodySquares[3][8] }"/>
+						<CheckBox Grid.Row="3" Grid.Column="9" IsChecked="{ Binding BodySquares[3][9] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{ Binding BodySquares[4][0] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="1" IsChecked="{ Binding BodySquares[4][1] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="2" IsChecked="{ Binding BodySquares[4][2] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="3" IsChecked="{ Binding BodySquares[4][3] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="4" IsChecked="{ Binding BodySquares[4][4] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="5" IsChecked="{ Binding BodySquares[4][5] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="6" IsChecked="{ Binding BodySquares[4][6] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="7" IsChecked="{ Binding BodySquares[4][7] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="8" IsChecked="{ Binding BodySquares[4][8] }"/>
+						<CheckBox Grid.Row="4" Grid.Column="9" IsChecked="{ Binding BodySquares[4][9] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{ Binding BodySquares[5][0] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{ Binding BodySquares[5][1] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="2" IsChecked="{ Binding BodySquares[5][2] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="3" IsChecked="{ Binding BodySquares[5][3] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="4" IsChecked="{ Binding BodySquares[5][4] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="5" IsChecked="{ Binding BodySquares[5][5] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="6" IsChecked="{ Binding BodySquares[5][6] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="7" IsChecked="{ Binding BodySquares[5][7] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="8" IsChecked="{ Binding BodySquares[5][8] }"/>
+						<CheckBox Grid.Row="5" Grid.Column="9" IsChecked="{ Binding BodySquares[5][9] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{ Binding BodySquares[6][0] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{ Binding BodySquares[6][1] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="2" IsChecked="{ Binding BodySquares[6][2] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="3" IsChecked="{ Binding BodySquares[6][3] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="4" IsChecked="{ Binding BodySquares[6][4] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="5" IsChecked="{ Binding BodySquares[6][5] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="6" IsChecked="{ Binding BodySquares[6][6] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="7" IsChecked="{ Binding BodySquares[6][7] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="8" IsChecked="{ Binding BodySquares[6][8] }"/>
+						<CheckBox Grid.Row="6" Grid.Column="9" IsChecked="{ Binding BodySquares[6][9] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="0" IsChecked="{ Binding BodySquares[7][0] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="1" IsChecked="{ Binding BodySquares[7][1] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="2" IsChecked="{ Binding BodySquares[7][2] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="3" IsChecked="{ Binding BodySquares[7][3] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="4" IsChecked="{ Binding BodySquares[7][4] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="5" IsChecked="{ Binding BodySquares[7][5] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="6" IsChecked="{ Binding BodySquares[7][6] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="7" IsChecked="{ Binding BodySquares[7][7] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="8" IsChecked="{ Binding BodySquares[7][8] }"/>
+						<CheckBox Grid.Row="7" Grid.Column="9" IsChecked="{ Binding BodySquares[7][9] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{ Binding BodySquares[8][0] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{ Binding BodySquares[8][1] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="2" IsChecked="{ Binding BodySquares[8][2] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="3" IsChecked="{ Binding BodySquares[8][3] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="4" IsChecked="{ Binding BodySquares[8][4] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="5" IsChecked="{ Binding BodySquares[8][5] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="6" IsChecked="{ Binding BodySquares[8][6] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="7" IsChecked="{ Binding BodySquares[8][7] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="8" IsChecked="{ Binding BodySquares[8][8] }"/>
+						<CheckBox Grid.Row="8" Grid.Column="9" IsChecked="{ Binding BodySquares[8][9] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="0" IsChecked="{ Binding BodySquares[9][0] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="1" IsChecked="{ Binding BodySquares[9][1] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="2" IsChecked="{ Binding BodySquares[9][2] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="3" IsChecked="{ Binding BodySquares[9][3] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="4" IsChecked="{ Binding BodySquares[9][4] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="5" IsChecked="{ Binding BodySquares[9][5] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="6" IsChecked="{ Binding BodySquares[9][6] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="7" IsChecked="{ Binding BodySquares[9][7] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="8" IsChecked="{ Binding BodySquares[9][8] }"/>
+						<CheckBox Grid.Row="9" Grid.Column="9" IsChecked="{ Binding BodySquares[9][9] }"/>
 					</Grid>
 
 				</Grid>
@@ -310,12 +316,14 @@
 				<Button
 					Grid.Row="1"
 					Margin="5,5,5,5"
-					Content="→適用"/>
+					Content="→適用"
+					Command="{ Binding UpdateBodyCommand }" />
 
 				<Button
 					Grid.Row="2"
 					Margin="5,5,5,5"
-					Content="←編集" />
+					Content="←編集"
+					Command="{ Binding EditBodyCommand }" />
 
 			</Grid>
 
@@ -324,6 +332,37 @@
 				Grid.Column="2"
 				Margin="5,5,5,5">
 
+			</DataGrid>
+			<!-- 一覧 -->
+			<DataGrid
+				Grid.Column="2"
+				AutoGenerateColumns="False"
+				ItemsSource="{Binding Bodies}"
+				SelectedIndex="{ Binding SelectedBodyIndex }"
+				CanUserAddRows="False">
+				<DataGrid.Columns>
+					<DataGridTextColumn
+						Header="ID"
+						Width="200"
+						Binding="{Binding Id}" />
+					<DataGridTextColumn
+						Header="装備名"
+						Width="*"
+						Binding="{Binding Name}" />
+					<DataGridTemplateColumn
+						Header="削除">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button
+									Content="削除"
+									Width="200"
+									Margin="5,5,5,5"
+									Tag="{Binding Id}"
+									Click="Delete" />
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
 			</DataGrid>
 
 		</Grid>

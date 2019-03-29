@@ -31,7 +31,6 @@
 			Grid.Row="1"
 			Grid.Column="0"
 			Margin="5,5,5,5"
-			Background="DarkGray"
 			Command="{Binding TransitionToBodyCreating}">
 			<Button.Content>
 				<TextBlock 
