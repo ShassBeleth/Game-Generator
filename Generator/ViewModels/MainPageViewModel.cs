@@ -39,8 +39,9 @@ namespace Generator.ViewModels {
 			this.InitEquipmentPlace();
 			this.InitEquipment();
 			this.InitBody();
+			this.InitSave();
 
-			this.InitialTemp();
+			this.InitChapter();
 			this.Log( "End" );
 		}
 
@@ -2003,37 +2004,6 @@ namespace Generator.ViewModels {
 
 		#endregion
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		#region Chapter
-
-		/// <summary>
-		/// 保存コマンド
-		/// </summary>
-		public ReactiveCommand SaveToChapterCommand { get; } = new ReactiveCommand();
-
-		#endregion
-
 		#region Save
 
 		/// <summary>
@@ -2175,21 +2145,11 @@ namespace Generator.ViewModels {
 			get => this.havingEquipments;
 		}
 
-		#endregion
-
-		void InitialTemp()
+		/// <summary>
+		/// セーブ初期設定
+		/// </summary>
+		private void InitSave()
 		{
-
-			#region Chapter
-
-			this.SaveToChapterCommand
-				.Subscribe( _ => this.SaveToChapter() )
-				.AddTo( this.Disposable );
-
-			#endregion
-
-			#region Save
-
 			this.SelectSave( 0 );
 
 			this.UpdateSelectedSaveIdCommand
@@ -2204,28 +2164,7 @@ namespace Generator.ViewModels {
 			this.SaveToSaveCommand
 				.Subscribe( _ => this.SaveToSave() )
 				.AddTo( this.Disposable );
-
-			#endregion
-
 		}
-
-
-		#region Chapter
-
-		/// <summary>
-		/// チャプターの保存
-		/// </summary>
-		private void SaveToChapter() => ChapterRepository.GetInstance().Write();
-
-		/// <summary>
-		/// 一覧削除
-		/// </summary>
-		/// <param name="id">チャプターID</param>
-		public void DeleteChapter( int id ) => this.Log( "未実装" );
-
-		#endregion
-
-		#region Save
 
 		/// <summary>
 		/// セーブデータ選択
@@ -2240,7 +2179,7 @@ namespace Generator.ViewModels {
 				.FirstOrDefault( row => row.Id == saveId );
 			this.IsReverseHorizontalCamera = save.IsReverseHorizontalCamera;
 			this.IsReverseVerticalCamera = save.IsReverseVerticalCamera;
-			;
+
 
 			#region クリア済みチャプター一覧
 			{
@@ -2391,6 +2330,25 @@ namespace Generator.ViewModels {
 			}
 			#endregion
 
+			#region パラメータチップ
+			{
+				// 選択中のセーブデータ以外を保持しておく
+				IEnumerable<HavingParameterChip> another = HavingParameterChipRepository.GetInstance().Rows
+					.Where( row => row.SaveId != saveId );
+				// 画面上の一覧から新規にリストを作成する
+				IEnumerable<HavingParameterChip> newList = this.HavingParameterChips
+					.Where( row => row.Having )
+					.Select( row => new HavingParameterChip()
+					{
+						SaveId = saveId ,
+						ParameterChipId = row.Id ,
+					} );
+				HavingParameterChipRepository.GetInstance().Rows.Clear();
+				HavingParameterChipRepository.GetInstance().Rows.AddRange( another.Union( newList ).ToList() );
+				HavingParameterChipRepository.GetInstance().Write();
+			}
+			#endregion
+
 			#region チャプター
 			{
 				// 選択中のセーブデータ以外を保持しておく
@@ -2412,11 +2370,33 @@ namespace Generator.ViewModels {
 
 		}
 
+		#endregion
+
+
+		// TOOD ↓まだできてない
+
+		#region Chapter
+
+		/// <summary>
+		/// 保存コマンド
+		/// </summary>
+		public ReactiveCommand SaveToChapterCommand { get; } = new ReactiveCommand();
+
+		private void InitChapter() =>
+			this.SaveToChapterCommand
+				.Subscribe( _ => this.SaveToChapter() )
+				.AddTo( this.Disposable );
+
+		/// <summary>
+		/// チャプターの保存
+		/// </summary>
+		private void SaveToChapter() => ChapterRepository.GetInstance().Write();
+
 		/// <summary>
 		/// 一覧削除
 		/// </summary>
-		/// <param name="id">セーブID</param>
-		public void DeleteSave( int id ) => this.Log( "未実装" );
+		/// <param name="id">チャプターID</param>
+		public void DeleteChapter( int id ) => this.Log( "未実装" );
 
 		#endregion
 

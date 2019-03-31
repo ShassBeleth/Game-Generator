@@ -20,7 +20,6 @@
 			Grid.Row="0" 
 			Grid.Column="0"
 			Margin="5,5,5,5"
-			Background="DarkGray"
 			Command="{Binding TransitionToSaveCreating}">
 			<Button.Content>
 				<TextBlock 
