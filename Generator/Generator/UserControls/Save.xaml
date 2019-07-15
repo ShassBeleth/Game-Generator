@@ -1,0 +1,261 @@
+﻿<UserControl 
+	x:Class="Generator.UserControls.Save"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:local="clr-namespace:Generator.UserControls"
+	mc:Ignorable="d" 
+	d:DesignHeight="450"
+	d:DesignWidth="800">
+
+	<!-- 編集部/ボタン -->
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="60" />
+		</Grid.RowDefinitions>
+
+		<!-- 編集部 -->
+		<Grid
+			Grid.Row="0">
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto" />
+				<RowDefinition Height="*" />
+				<RowDefinition Height="60" />
+			</Grid.RowDefinitions>
+
+			<!-- セーブ選択 -->
+			<Grid
+				Grid.Row="0" >
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<RadioButton
+					Grid.Column="0"
+					Content="セーブ1" 
+					GroupName="Saves" 
+					IsChecked="{Binding IsSelectedSave1}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
+
+				<RadioButton
+					Grid.Column="1"
+					Content="セーブ2" 
+					GroupName="Saves" 
+					IsChecked="{Binding IsSelectedSave2}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
+
+				<RadioButton
+					Grid.Column="2"
+					Content="セーブ3" 
+					GroupName="Saves" 
+					IsChecked="{Binding IsSelectedSave3}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
+
+				<RadioButton
+					Grid.Column="3"
+					Content="セーブ4" 
+					GroupName="Saves"
+					IsChecked="{Binding IsSelectedSave4}"
+					Command="{Binding UpdateSelectedSaveIdCommand}"/>
+
+			</Grid>
+
+			<!-- セーブデータ内容 -->
+			<Grid
+				Grid.Row="1">
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<!-- オプション情報 -->
+				<Grid
+					Grid.Row="0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<CheckBox
+						Grid.Column="0"
+						Content="カメラ移動を水平方向に反転させるかどうか" 
+						IsChecked="{Binding IsReverseHorizontalCamera}"/>
+					<CheckBox
+						Grid.Column="1"
+						Content="カメラ移動を垂直方向に反転させるかどうか" 
+						IsChecked="{Binding IsReverseVerticalCamera}"/>
+				</Grid>
+
+				<!-- 紐づくテーブルのチェック -->
+				<Grid
+					Grid.Row="1" >
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<!-- チャプター一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="0"
+						Content="クリア済みチャプター一覧" 
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="0" 
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding ClearedChapters}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="クリア済み"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="チャプター名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
+
+					<!-- 素体一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="1"
+						Content="所持している素体一覧"  
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="1" 
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding HavingBodies}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="所持"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="素体名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
+
+					<!-- パラメータチップ一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="2"
+						Content="所持しているパラメータチップ一覧"  
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="2" 
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding HavingParameterChips}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="所持"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="パラメータチップ名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
+
+					<!-- 装備一覧 -->
+					<Label
+						Grid.Row="0"
+						Grid.Column="3"
+						Content="所持している装備一覧"  
+						Margin="5,5,5,5"/>
+					<DataGrid
+						Grid.Row="1"
+						Grid.Column="3" 
+						Margin="5,5,5,5"
+						AutoGenerateColumns="False"
+						ItemsSource="{Binding HavingEquipments}"
+						CanUserAddRows="False">
+						<DataGrid.Columns>
+							<DataGridCheckBoxColumn
+								Header="所持"
+								Width="60"
+								Binding="{Binding Having}" />
+							<DataGridTextColumn
+								Header="装備名"
+								Width="*"
+								Binding="{Binding Name}" />
+						</DataGrid.Columns>
+					</DataGrid>
+
+				</Grid>
+
+			</Grid>
+
+			<Grid
+				Grid.Row="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="200" />
+				</Grid.ColumnDefinitions>
+
+				<Button
+					Grid.Column ="1"
+					Content="削除"
+					Margin="5,5,5,5" />
+
+			</Grid>
+
+		</Grid>
+
+		<!-- 下部ボタン -->
+		<Grid
+			Grid.Row="1" >
+			<Grid.ColumnDefinitions >
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="200" />
+			</Grid.ColumnDefinitions>
+
+			<!-- 保存ボタン-->
+			<Button
+				Grid.Column ="1"
+				Content="保存(セーブ切替前に保存すること)"
+				Margin="5,5,5,5"
+				Command="{Binding SaveToSaveCommand}"
+				/>
+
+			<!-- 戻るボタン -->
+			<Button
+				Grid.Column="2"
+				Content="戻る"
+				Margin="5,5,5,5"
+				Click="OnClickBack"
+				/>
+
+		</Grid>
+
+	</Grid>
+</UserControl>

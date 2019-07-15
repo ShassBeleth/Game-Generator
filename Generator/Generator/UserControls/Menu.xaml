@@ -1,0 +1,72 @@
+﻿<UserControl 
+	x:Class="Generator.UserControls.Menu"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	xmlns:local="clr-namespace:Generator.UserControls"
+	mc:Ignorable="d" 
+	d:DesignHeight="450"
+	d:DesignWidth="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Button
+			Grid.Row="0" 
+			Grid.Column="0"
+			Margin="5,5,5,5"
+			Content="セーブデータを作る"
+			Click="OnClickCreateSaveData" />
+		<Button
+			Grid.Row="1"
+			Grid.Column="0"
+			Margin="5,5,5,5"
+			Content="素体を作る"
+			Click="OnClickCreateBody" />
+		<Button
+			Grid.Row="0"
+			Grid.Column="1"
+			Margin="5,5,5,5"
+			Content="装備を作る"
+			Click="OnClickCreateEquipment" />
+		<Button
+			Grid.Row="1"
+			Grid.Column="1"
+			Margin="5,5,5,5"
+			Content="パラメータチップを作る"
+			Click="OnClickParameterChip" />
+		<Button
+			Grid.Row="0"
+			Grid.Column="2"
+			Margin="5,5,5,5"
+			Content="パラメータを作る"
+			Click="OnClickCreateParameter" />
+		<Button
+			Grid.Row="1"
+			Grid.Column="2"
+			Margin="5,5,5,5"
+			Background="DarkGray"
+			Content="チャプターを作る"
+			Click="OnClickCreateChapter" />
+		<Button
+			Grid.Row="0"
+			Grid.Column="3"
+			Margin="5,5,5,5"
+			Content="装備可能箇所を作る"
+			Click="OnClickCreateEquipablePlace" />
+		<Button
+			Grid.Row="1"
+			Grid.Column="3"
+			Margin="5,5,5,5"
+			Content="初期設定"
+			Click="OnClickInitialSetting" />
+	</Grid>
+</UserControl>

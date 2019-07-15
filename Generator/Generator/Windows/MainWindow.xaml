@@ -1,0 +1,24 @@
+﻿<Window 
+	x:Class="Generator.Windows.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:local="clr-namespace:Generator"
+	xmlns:uc="clr-namespace:Generator.UserControls"
+	mc:Ignorable="d"
+	Title="Generator"
+	Width="1600"
+	Height="900">
+	<Grid>
+		<uc:Menu x:Name="menu" />
+		<uc:Body x:Name="body" />
+		<uc:Save x:Name="save" />
+		<uc:Equipment x:Name="equipment" />
+		<uc:Parameter x:Name="parameter" />
+		<uc:Chapter x:Name="chapter" />
+		<uc:EquipablePlace x:Name="equipablePlace" />
+		<uc:InitialSetting x:Name="initialSetting" />
+		<uc:ParameterChip x:Name="parameterChip" />
+	</Grid>
+</Window>
